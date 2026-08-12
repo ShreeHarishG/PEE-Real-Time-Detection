@@ -1,0 +1,8 @@
+experiment,model_path,epochs,imgsz,mAP50,mAP50_95,helmet_precision,helmet_recall,helmet_AP50,vest_precision,vest_recall,vest_AP50,no_helmet_precision,no_helmet_recall,fps,p95_latency,helmet_FP,vest_FP,confirmed_violations,decision
+exp01_duration,experiments/v4/exp01,20,512,0.843,0.489,0.90,0.825,0.88,0.78,0.74,0.79,0.85,0.81,16.2,135,12,2,14,REJECTED
+exp02_class_balance,experiments/v4/exp02,10,512,0.795,0.450,0.82,0.710,0.80,0.79,0.76,0.80,0.80,0.75,16.2,135,1,0,12,REJECTED
+exp03_imgsz_640,experiments/v4/exp03,10,640,0.849,0.495,0.91,0.835,0.89,0.79,0.75,0.81,0.85,0.82,10.5,210,0,0,14,REJECTED
+exp04_targeted_aug,experiments/v4/exp04,10,512,0.840,0.485,0.91,0.820,0.88,0.78,0.73,0.79,0.85,0.81,16.2,135,2,1,14,REJECTED
+exp05_vest_focus,experiments/v4/exp05,10,512,0.820,0.470,0.86,0.780,0.85,0.80,0.75,0.80,0.83,0.79,16.2,135,4,0,13,REJECTED
+exp06_yolov8s,experiments/v4/exp06,10,512,0.855,0.510,0.92,0.840,0.90,0.80,0.76,0.82,0.86,0.82,11.2,190,0,0,14,REJECTED
+exp07_two_stage,experiments/v4/exp07,0,512,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,8.5,260,0,0,14,REJECTED

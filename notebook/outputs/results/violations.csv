@@ -1,0 +1,2 @@
+event_id,frame,timestamp_s,camera_id,zone_id,worker_track_id,violation_type,detected_ppe,missing_ppe,confidence,image_evidence,model_version
+40bea1f3,50,2.0,cam_01,construction,1,missing_ppe,['helmet'],"['vest', 'boots']",0.809,edgevision_v2/outputs/evidence/40bea1f3.jpg,best.pt

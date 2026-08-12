@@ -1,0 +1,11 @@
+v2:
+  path: models/ppe_v2_backup.pt
+  version: V2
+
+v3-hn:
+  path: models/ppe_v3_hn_best.pt
+  version: V3-HN
+  imgsz: 512
+
+production:
+  version: V3-HN

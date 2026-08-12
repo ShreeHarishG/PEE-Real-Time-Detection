@@ -1,0 +1,17 @@
+{
+    "person_detections": 1955,
+    "stable_person_tracks": 1848,
+    "ppe_detections": 1095,
+    "helmet_detections": 471,
+    "vest_detections": 27,
+    "ppe_associations": 1092,
+    "association_failures": 3,
+    "cross_assignment_candidates": 0,
+    "confirmed_violations": 15,
+    "person_false_positive_candidates": 0,
+    "short_tracks": 8,
+    "frames": 221,
+    "average_fps": 16.267801879381924,
+    "warm_fps": 20.82931834532095,
+    "p95_latency": 62.53589999687392
+}

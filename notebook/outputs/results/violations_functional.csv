@@ -1,0 +1,16 @@
+timestamp,event_id,person_id,zone,missing_ppe,confidence,evidence_path,model_version
+2026-08-12T13:15:51,39585c42,1,construction,helmet|vest,0.5,edgevision_v2/outputs/evidence/39585c42.jpg,ppe_best.pt
+2026-08-12T13:15:51,b71ece04,2,construction,helmet|vest,0.5,edgevision_v2/outputs/evidence/b71ece04.jpg,ppe_best.pt
+2026-08-12T13:15:51,930bc2bf,3,construction,helmet|vest,0.5,edgevision_v2/outputs/evidence/930bc2bf.jpg,ppe_best.pt
+2026-08-12T13:15:51,b800f707,5,construction,helmet|vest,0.5,edgevision_v2/outputs/evidence/b800f707.jpg,ppe_best.pt
+2026-08-12T13:15:51,468cb69d,6,construction,helmet|vest,0.5,edgevision_v2/outputs/evidence/468cb69d.jpg,ppe_best.pt
+2026-08-12T13:15:51,e6f250eb,11,construction,helmet|vest,0.5,edgevision_v2/outputs/evidence/e6f250eb.jpg,ppe_best.pt
+2026-08-12T13:15:52,cd619414,12,construction,helmet|vest,0.5,edgevision_v2/outputs/evidence/cd619414.jpg,ppe_best.pt
+2026-08-12T13:15:54,47ee6d0f,31,construction,helmet|vest,0.5,edgevision_v2/outputs/evidence/47ee6d0f.jpg,ppe_best.pt
+2026-08-12T13:15:55,ce4623d9,8,construction,helmet|vest,0.5,edgevision_v2/outputs/evidence/ce4623d9.jpg,ppe_best.pt
+2026-08-12T13:15:56,d4640fc2,35,construction,helmet|vest,0.5,edgevision_v2/outputs/evidence/d4640fc2.jpg,ppe_best.pt
+2026-08-12T13:15:59,4f38f142,40,construction,helmet|vest,0.5,edgevision_v2/outputs/evidence/4f38f142.jpg,ppe_best.pt
+2026-08-12T13:16:00,1c2d1c06,47,construction,helmet|vest,0.5,edgevision_v2/outputs/evidence/1c2d1c06.jpg,ppe_best.pt
+2026-08-12T13:16:03,2034ddec,65,construction,helmet|vest,0.5,edgevision_v2/outputs/evidence/2034ddec.jpg,ppe_best.pt
+2026-08-12T13:16:08,1ca07599,72,construction,helmet|vest,0.5,edgevision_v2/outputs/evidence/1ca07599.jpg,ppe_best.pt
+2026-08-12T13:16:08,f847a150,70,construction,helmet|vest,0.5,edgevision_v2/outputs/evidence/f847a150.jpg,ppe_best.pt

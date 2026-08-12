@@ -1,0 +1,76 @@
+{
+    "model": "YOLOv8n",
+    "weights": "edgevision_v2/models/ppe_best.pt",
+    "dataset": "edgevision_v2/datasets/merged/",
+    "data_yaml": "edgevision_v2/datasets/merged/data.yaml",
+    "imgsz": 512,
+    "epochs": 30,
+    "precision": "FP32",
+    "gpu": "RTX 4050",
+    "person_detector": "yolov8n.pt",
+    "tracker": "bytetrack.yaml",
+    "reid": false,
+    "metrics": {
+        "mAP50": 0.844,
+        "mAP50_95": 0.501
+    },
+    "thresholds": {
+        "HELMET_CONF": 0.65,
+        "VEST_CONF": 0.45,
+        "MIN_PERSON_CONF": 0.35,
+        "MIN_ASSOC_SCORE": 0.4
+    },
+    "person_filter": {
+        "MIN_PERSON_WIDTH": 25,
+        "MIN_PERSON_HEIGHT": 50,
+        "MIN_PERSON_AREA": 1500,
+        "MIN_PERSON_ASPECT": 0.15,
+        "MAX_PERSON_ASPECT": 1.5,
+        "MIN_TRACK_STABILITY": 5
+    },
+    "association_weights": {
+        "W_IOA": 0.4,
+        "W_SPATIAL": 0.3,
+        "W_CENTER_DIST": 0.3
+    },
+    "temporal_validator": {
+        "window_size": 10,
+        "violation_threshold": 8,
+        "min_frames": 50,
+        "requires_current_violation": true
+    },
+    "zone_rules": {
+        "construction": {
+            "required": [
+                "helmet",
+                "vest"
+            ]
+        }
+    },
+    "real_world_performance": {
+        "phase3d_negative_test": {
+            "frames": 221,
+            "confirmed_violations": 15,
+            "avg_fps": 26.56,
+            "p95_latency_ms": 41.15
+        },
+        "phase3e_positive_test": {
+            "frames": 400,
+            "unique_people": 63,
+            "people_with_both": 55,
+            "confirmed_violations": 13,
+            "helmet_detection_rate": 0.8987,
+            "vest_detection_rate": 0.8263,
+            "avg_fps": 26.13,
+            "warm_fps": 30.3
+        },
+        "phase3i_final": {
+            "ppe_associations": 1036,
+            "association_failures": 59,
+            "cross_assignment_candidates": 14,
+            "confirmed_violations": 14,
+            "warm_fps": 22.35,
+            "p95_latency_ms": 55.64
+        }
+    }
+}

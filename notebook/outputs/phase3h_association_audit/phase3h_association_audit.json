@@ -1,0 +1,12 @@
+{
+    "new_unassociated_ppe": 70,
+    "likely_valid": 32,
+    "likely_false_ppe": 10,
+    "fake_person_dependent": 28,
+    "ambiguous": 0,
+    "cross_assignment_candidates": 14,
+    "genuine_worker_filtering_concerns": 0,
+    "average_fps": 16.64,
+    "warm_fps": 21.49,
+    "p95_latency_ms": 61.74
+}

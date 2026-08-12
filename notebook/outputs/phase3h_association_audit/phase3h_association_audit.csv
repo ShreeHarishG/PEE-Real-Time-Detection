@@ -1,0 +1,15 @@
+frame,ppe_class,candidate_person_ids,selected_person_id,association_score,ioa,spatial_score,classification,reason
+13,helmet,"8,11",8,0.7795545,0.921408,0.85601115,legitimate overlapping-person association,High candidate overlap (IoU=0.41)
+22,helmet,"11,8",11,0.8266842,0.94749194,0.903735,legitimate overlapping-person association,High candidate overlap (IoU=0.54)
+26,helmet,"11,8",11,0.81540966,0.91561913,0.9061543,legitimate overlapping-person association,High candidate overlap (IoU=0.58)
+43,helmet,"2,22",22,0.7476183,0.81890684,0.998901,genuine cross-assignment risk,Close scoring margins (diff=0.07) between distant candidates
+44,helmet,"2,22",22,0.76097053,0.840671,0.9982368,genuine cross-assignment risk,Close scoring margins (diff=0.13) between distant candidates
+54,helmet,"1,35",35,0.76885843,0.8932915,0.89667374,genuine cross-assignment risk,Close scoring margins (diff=0.05) between distant candidates
+55,helmet,"1,35",35,0.75833243,0.8818993,0.8922282,genuine cross-assignment risk,Close scoring margins (diff=0.01) between distant candidates
+56,helmet,"1,35",35,0.7559578,0.88005847,0.8931768,genuine cross-assignment risk,Close scoring margins (diff=0.00) between distant candidates
+57,helmet,"1,35",35,0.79630256,0.95676666,0.89839566,genuine cross-assignment risk,Close scoring margins (diff=0.04) between distant candidates
+58,helmet,"1,35",35,0.78835976,0.93270016,0.9109693,genuine cross-assignment risk,Close scoring margins (diff=0.05) between distant candidates
+59,helmet,"1,35",35,0.76681936,0.8701544,0.92874146,genuine cross-assignment risk,Close scoring margins (diff=0.03) between distant candidates
+61,helmet,"1,35",35,0.78110135,0.9070924,0.9199644,genuine cross-assignment risk,Close scoring margins (diff=0.12) between distant candidates
+62,helmet,"1,35",35,0.78079396,0.9103631,0.90722597,ambiguous,"Multiple candidates cleared threshold, default winner took it"
+74,helmet,"3,45",45,0.82206523,0.968582,0.98077816,ambiguous,"Multiple candidates cleared threshold, default winner took it"

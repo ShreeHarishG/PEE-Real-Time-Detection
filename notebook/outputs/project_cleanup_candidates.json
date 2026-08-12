@@ -1,0 +1,15 @@
+{
+  "safe_to_delete": [
+    "W:\\3 projects\\Building\\Tfrenzy\\notebook\\runs\\detect\\experiments\\v2",
+    "W:\\3 projects\\Building\\Tfrenzy\\notebook\\runs\\detect\\experiments\\v3\\exp1_baseline",
+    "W:\\3 projects\\Building\\Tfrenzy\\notebook\\runs\\detect\\experiments\\v3\\exp1_hard_negative\\weights\\last.pt",
+    "W:\\3 projects\\Building\\Tfrenzy\\notebook\\archive"
+  ],
+  "requires_review": [
+    "W:\\3 projects\\Building\\Tfrenzy\\notebook\\harness-1",
+    "W:\\3 projects\\Building\\Tfrenzy\\notebook\\fp_crops",
+    "W:\\3 projects\\Building\\Tfrenzy\\notebook\\scripts\\exp1_train.py",
+    "W:\\3 projects\\Building\\Tfrenzy\\notebook\\scripts\\run_exp1_setup.ps1"
+  ],
+  "reason": "Old experiment runs, outdated checkpoints, and temporary false-positive crop directories are identified for cleanup. Important datasets, V2/V3 best models, validation scripts, and outputs are preserved."
+}

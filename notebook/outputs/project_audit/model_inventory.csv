@@ -1,0 +1,5 @@
+path,size_MB,classification,notes
+edgevision_v2/models/ppe_best.pt,6.2,V2_BASELINE,Trained YOLOv8n PPE detector
+yolov8n.pt,6.5,V2_BASELINE,Pretrained person detector
+archive/models/yolov8s.pt,22.6,ARCHIVED,Unused larger model
+archive/models/yolo26n.pt,5.5,ARCHIVED,Unused YOLO26 model

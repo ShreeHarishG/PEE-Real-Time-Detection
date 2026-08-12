@@ -1,0 +1,19 @@
+[Unit]
+Description=EdgeVision ML Pipeline Service
+After=network.target docker.service
+Requires=docker.service
+
+[Service]
+Type=simple
+User=nvidia
+WorkingDirectory=/opt/edgevision/notebook
+ExecStartPre=/bin/bash -c "docker-compose up -d db"
+ExecStartPre=/bin/bash -c "cd backend && uvicorn app.main:app --port 8000 &"
+ExecStart=/bin/bash -c "source /opt/edgevision/venv/bin/activate && python3 src/pipeline.py"
+Restart=always
+RestartSec=10
+Environment="PYTHONUNBUFFERED=1"
+Environment="CUDA_VISIBLE_DEVICES=0"
+
+[Install]
+WantedBy=multi-user.target

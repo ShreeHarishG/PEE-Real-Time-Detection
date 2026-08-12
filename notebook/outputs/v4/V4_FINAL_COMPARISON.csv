@@ -1,0 +1,4 @@
+model,mAP50,mAP50_95,helmet_recall,vest_recall,helmet_FP,vest_FP,warm_fps,selected
+V2,0.844464,0.501249,0.845582,0.766667,154,10,24.3,FALSE
+V3-HN,0.841955,0.487671,0.823261,0.737585,0,0,16.2,TRUE
+V4-Candidate,N/A,N/A,N/A,N/A,N/A,N/A,N/A,FALSE

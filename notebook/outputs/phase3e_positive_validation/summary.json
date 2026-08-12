@@ -1,0 +1,16 @@
+{
+    "total_frames": 400,
+    "total_person_ids": 63,
+    "total_helmet_detections": 1992,
+    "total_vest_detections": 1888,
+    "total_confirmed_violations": 8,
+    "average_fps": 9.0,
+    "min_fps": 0.14,
+    "max_fps": 14.35,
+    "p95_latency_ms": 134.63,
+    "observational_metrics": {
+        "helmet_detection_rate_for_compliant_people": 0.8729,
+        "vest_detection_rate_for_compliant_people": 0.8618,
+        "false_violation_rate_for_compliant_people": 0.2105
+    }
+}

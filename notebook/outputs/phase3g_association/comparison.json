@@ -1,0 +1,62 @@
+{
+    "person_detections": {
+        "BEFORE": 1955,
+        "AFTER": 1955,
+        "CHANGE": 0
+    },
+    "person_false_positive_candidates": {
+        "BEFORE": 0,
+        "AFTER": 175,
+        "CHANGE": 175
+    },
+    "stable_person_tracks": {
+        "BEFORE": 1848,
+        "AFTER": 1780,
+        "CHANGE": -68
+    },
+    "helmet_detections": {
+        "BEFORE": 471,
+        "AFTER": 471,
+        "CHANGE": 0
+    },
+    "vest_detections": {
+        "BEFORE": 27,
+        "AFTER": 27,
+        "CHANGE": 0
+    },
+    "ppe_associations": {
+        "BEFORE": 1092,
+        "AFTER": 1022,
+        "CHANGE": -70
+    },
+    "association_failures": {
+        "BEFORE": 3,
+        "AFTER": 73,
+        "CHANGE": 70
+    },
+    "cross_assignment_candidates": {
+        "BEFORE": 0,
+        "AFTER": 14,
+        "CHANGE": 14
+    },
+    "confirmed_violations": {
+        "BEFORE": 15,
+        "AFTER": 14,
+        "CHANGE": -1
+    },
+    "average_fps": {
+        "BEFORE": 16.267801879381924,
+        "AFTER": 16.057699017913,
+        "CHANGE": -0.21010286146892554
+    },
+    "warm_fps": {
+        "BEFORE": 20.82931834532095,
+        "AFTER": 20.479313787692615,
+        "CHANGE": -0.3500045576283348
+    },
+    "p95_latency": {
+        "BEFORE": 62.53589999687392,
+        "AFTER": 62.787499991827644,
+        "CHANGE": 0.25159999495372176
+    }
+}

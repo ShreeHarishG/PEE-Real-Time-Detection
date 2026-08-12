@@ -1,0 +1,11 @@
+{
+    "model_architecture": "yolov8n.pt",
+    "dataset_yaml": "edgevision_v2/datasets/v3_hn/data.yaml",
+    "imgsz": 512,
+    "epochs": 30,
+    "batch_size": 16,
+    "gpu": "NVIDIA GeForce RTX 4050 Laptop GPU",
+    "pytorch_version": "2.5.1+cu121",
+    "ultralytics_version": "8.4.113",
+    "timestamp_start": "2026-08-12T09:26:08"
+}
