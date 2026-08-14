@@ -59,14 +59,23 @@ python src/pipeline.py
 
 ## Quick Start (Linux / Ubuntu / Jetson)
 
-```bash
-pip install -r requirements.txt
-docker-compose up -d db
-python backend/scripts/init_db.py
-python -m uvicorn backend.app.main:app --port 8000 &
-cd frontend && npm install && npm run dev &
-python src/pipeline.py
-```
+To deploy the fully automated pipeline on an NVIDIA Jetson device (JetPack 5.x/6.x):
+
+1. **Transfer Files**: Copy the entire project folder to your Jetson device.
+2. **Install Dependencies**: Open a terminal on the Jetson and navigate to the deployment folder:
+   ```bash
+   cd notebook/deployment
+   sudo bash install_jetson.sh
+   ```
+   *This script automatically installs DeepStream, PyTorch, creates necessary directories, and installs the `edgevision` systemd service.*
+3. **Start the Service**: 
+   The pipeline will now run automatically on boot. To start it immediately:
+   ```bash
+   sudo systemctl start edgevision
+   ```
+4. **Compile TensorRT Engine**: To achieve maximum FPS, you must compile the ONNX model into a TensorRT engine on the Jetson itself. Follow the step-by-step instructions in:
+   [`notebook/deployment/tensorrt_instructions.md`](notebook/deployment/tensorrt_instructions.md)
+5. **View Dashboard**: Access the live stream and statistics from any device on the network by pointing a browser to `http://<JETSON_IP>:3000`.
 
 ---
 

@@ -22,12 +22,36 @@ class Zone(Base):
     name = Column(String, unique=True, index=True)
     type = Column(String) # construction, general, height, restricted
     required_ppe = Column(JSON) # e.g. ["helmet", "vest"]
+    polygon = Column(JSON, nullable=True) # Normalized coordinates [(x,y), ...]
     confidence_threshold = Column(Float, default=0.25)
     min_seconds_in_zone = Column(Float, default=2.0)
     is_active = Column(Boolean, default=True)
     
     cameras = relationship("Camera", back_populates="zone")
     events = relationship("ViolationEvent", back_populates="zone")
+
+class Video(Base):
+    __tablename__ = "videos"
+    id = Column(String, primary_key=True, index=True) # UUID string
+    filename = Column(String)
+    filepath = Column(String)
+    uploaded_at = Column(DateTime, default=datetime.datetime.utcnow)
+    
+    jobs = relationship("ProcessingJob", back_populates="video")
+
+class ProcessingJob(Base):
+    __tablename__ = "processing_jobs"
+    id = Column(String, primary_key=True, index=True) # UUID string
+    video_id = Column(String, ForeignKey("videos.id"))
+    status = Column(String, default="queued") # queued, processing, completed, failed, stopped
+    progress = Column(Integer, default=0) # frames processed
+    total_frames = Column(Integer, default=0)
+    fps = Column(Float, default=0.0)
+    started_at = Column(DateTime, nullable=True)
+    completed_at = Column(DateTime, nullable=True)
+    error_message = Column(String, nullable=True)
+    
+    video = relationship("Video", back_populates="jobs")
 
 class ViolationEvent(Base):
     __tablename__ = "violation_events"
@@ -44,6 +68,11 @@ class ViolationEvent(Base):
     evidence_video_path = Column(String, nullable=True)
     acknowledged = Column(Boolean, default=False)
     model_version = Column(String)
+    
+    # Feedback fields for Human-in-the-loop training
+    feedback_correct = Column(Boolean, nullable=True)
+    feedback_helmet = Column(Boolean, nullable=True)
+    feedback_vest = Column(Boolean, nullable=True)
     
     camera = relationship("Camera", back_populates="events")
     zone = relationship("Zone", back_populates="events")

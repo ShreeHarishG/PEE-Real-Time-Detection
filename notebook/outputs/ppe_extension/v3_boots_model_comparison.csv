@@ -1,0 +1,11 @@
+Metric,V3-HN,V3-BOOTS
+mAP50,0.751,0.768
+Helmet Recall,0.825,0.825
+Vest Recall,0.822,0.822
+Boots AP50,N/A,0.801
+Boots Recall,N/A,0.753
+Warm FPS,30.21,27.82
+Helmet FP,0,5
+Vest FP,0,3
+Boots FP,0,46
+Violations,1955,1541

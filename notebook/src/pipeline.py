@@ -14,6 +14,7 @@ import cv2
 import numpy as np
 import pandas as pd
 import yaml
+import argparse
 from ultralytics import YOLO
 
 # ==============================================================================
@@ -45,7 +46,7 @@ PPE_MODEL_PATH = os.path.join(PROJECT_ROOT, MODEL_CFG.get("path", "models/ppe_v3
 PERSON_MODEL_PATH = os.path.join(PROJECT_ROOT, "models", "yolov8n.pt")
 
 
-INPUT_VIDEO = os.path.join(PROJECT_ROOT, "..", "docs", "test.mp4")
+DEFAULT_INPUT_VIDEO = os.path.join(PROJECT_ROOT, "..", "docs", "test.mp4")
 OUTPUT_VIDEO = os.path.join(PROJECT_ROOT, "outputs", "results", "annotated_output_functional.mp4")
 OUTPUT_LOG = os.path.join(PROJECT_ROOT, "outputs", "results", "violations_functional.csv")
 EVIDENCE_DIR = os.path.join(PROJECT_ROOT, "outputs", "evidence")
@@ -103,7 +104,7 @@ def box_center(box: List[float]) -> Tuple[float, float]:
     return ((x1 + x2) / 2, (y1 + y2) / 2)
 
 def associate_ppe_to_persons(person_boxes: List[List[float]], person_ids: List[int], 
-                             ppe_boxes: List[List[float]], ppe_classes: List[str], margin: int = 15) -> Dict[int, List[str]]:
+                             ppe_boxes: List[List[float]], ppe_classes: List[str], margin: int = 50) -> Dict[int, List[str]]:
     """Associate PPE detections to person tracks using spatial containment."""
     assignments = defaultdict(list)
     for p_box, p_class in zip(ppe_boxes, ppe_classes):
@@ -130,10 +131,10 @@ def get_zone_rules_from_api(api_url="http://localhost:8000/api/v1/zones"):
         response = requests.get(api_url, timeout=2)
         if response.status_code == 200:
             zones = response.json()
-            return {z["name"]: {"required": z["required_ppe"], "id": z["id"]} for z in zones}
+            return {z["name"]: {"required": z["required_ppe"], "id": z["id"], "polygon": z.get("polygon")} for z in zones}
     except Exception as e:
         logger.warning(f"Failed to fetch zones from API: {e}. Falling back to default.")
-    return {"construction": {"required": ["helmet", "vest"], "id": 1}}
+    return {"construction": {"required": ["helmet", "vest"], "id": 1, "polygon": None}}
 
 def post_violation(event_data, api_url="http://localhost:8000/api/v1/violations"):
     try:
@@ -141,9 +142,34 @@ def post_violation(event_data, api_url="http://localhost:8000/api/v1/violations"
     except Exception as e:
         logger.error(f"Failed to POST violation event: {e}")
 
+def post_metrics(metrics_data, api_url="http://localhost:8000/api/v1/metrics"):
+    try:
+        requests.post(api_url, json=metrics_data, timeout=1)
+    except Exception as e:
+        logger.debug(f"Failed to POST metrics: {e}")
+
+def update_job_progress(job_id, progress, total_frames, fps, status=None, api_url="http://localhost:8000/api/v1/jobs"):
+    try:
+        payload = {"progress": progress, "total_frames": total_frames, "fps": fps}
+        if status:
+            payload["status"] = status
+        response = requests.put(f"{api_url}/{job_id}/progress", json=payload, timeout=1)
+        if response.status_code == 200:
+            return response.json().get("job_status")
+    except Exception as e:
+        logger.debug(f"Failed to update job progress: {e}")
+    return None
+
 def main():
-    if not os.path.exists(INPUT_VIDEO):
-        logger.error(f"Input video not found: {INPUT_VIDEO}")
+    parser = argparse.ArgumentParser(description="EdgeVision V3 Inference Pipeline")
+    parser.add_argument("--video", type=str, default=DEFAULT_INPUT_VIDEO, help="Path to input video file")
+    parser.add_argument("--job-id", type=str, default=None, help="Job ID for tracking progress via DB")
+    args = parser.parse_args()
+    
+    input_video_path = os.path.abspath(args.video)
+
+    if not os.path.exists(input_video_path):
+        logger.error(f"Input video not found: {input_video_path}")
         sys.exit(1)
 
     if not os.path.exists(PPE_MODEL_PATH):
@@ -161,8 +187,9 @@ def main():
         sys.exit(1)
 
     # Initialize Video
-    cap = cv2.VideoCapture(INPUT_VIDEO)
+    cap = cv2.VideoCapture(input_video_path)
     fps = cap.get(cv2.CAP_PROP_FPS) or 25
+    total_frames = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
     w = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
     h = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
     writer = cv2.VideoWriter(OUTPUT_VIDEO, cv2.VideoWriter_fourcc(*"mp4v"), fps, (w, h))
@@ -172,7 +199,12 @@ def main():
     
     # Fetch Zones
     dynamic_zones = get_zone_rules_from_api()
-    zone_id = dynamic_zones.get(ACTIVE_ZONE, {}).get("id", 1)
+    zone_data = dynamic_zones.get(ACTIVE_ZONE, {})
+    zone_id = zone_data.get("id", 1)
+    polygon = zone_data.get("polygon")
+    
+    if args.job_id:
+        update_job_progress(args.job_id, 0, total_frames, 0, status="processing")
     
     # Metrics
     metrics = {
@@ -184,8 +216,12 @@ def main():
     
     logger.info("Processing video stream...")
     start_time = time.time()
+    last_metric_time = time.time()
 
     while True:
+        # Removed real-time skipping to ensure smooth processing (even if slower)
+            
+        frame_start_time = time.time()
         ret, frame = cap.read()
         if not ret:
             break
@@ -193,7 +229,7 @@ def main():
 
         # Person Detection & Tracking
         p_result = person_model.track(frame, persist=True, classes=[PERSON_CLASS_ID],
-                                      tracker=TRACKER_CONFIG, conf=CONF_THRESHOLD, verbose=False, imgsz=IMGSZ)[0]
+                                      tracker=TRACKER_CONFIG, conf=CONF_THRESHOLD, verbose=False, imgsz=IMGSZ, half=True)[0]
         
         person_boxes = p_result.boxes.xyxy.cpu().numpy().tolist() if p_result.boxes.id is not None else []
         person_ids = p_result.boxes.id.int().cpu().tolist() if p_result.boxes.id is not None else []
@@ -205,13 +241,19 @@ def main():
         metrics["unique_track_ids"].update(person_ids)
 
         # PPE Detection
-        ppe_result = ppe_model(frame, conf=CONF_THRESHOLD, verbose=False)[0]
+        ppe_result = ppe_model(frame, conf=CONF_THRESHOLD, verbose=False, imgsz=IMGSZ, half=True)[0]
         ppe_boxes = ppe_result.boxes.xyxy.cpu().numpy().tolist()
         ppe_classes = [UNIFIED_CLASSES[int(c)] for c in ppe_result.boxes.cls.cpu().numpy()]
         ppe_confs = ppe_result.boxes.conf.cpu().numpy().tolist()
 
         # Association
         assignments = associate_ppe_to_persons(person_boxes, person_ids, ppe_boxes, ppe_classes)
+        
+        # Draw zone polygon if exists
+        abs_polygon = None
+        if polygon:
+            abs_polygon = np.array([[int(p[0] * w), int(p[1] * h)] for p in polygon], np.int32)
+            cv2.polylines(frame, [abs_polygon], True, (0, 255, 255), 2)
 
         # Rule validation & Evidence Generation
         for p_box, pid in zip(person_boxes, person_ids):
@@ -222,11 +264,21 @@ def main():
             has_violation = len(missing) > 0
             avg_conf = np.mean(ppe_confs) if ppe_confs else 0.5
             
-            # Rendering
             x1, y1, x2, y2 = map(int, p_box)
-            color = (0, 0, 255) if has_violation else (0, 255, 0)
+            
+            # Spatial Check
+            in_zone = True
+            if abs_polygon is not None:
+                bottom_center = (int((x1 + x2) / 2), int(y2))
+                in_zone = cv2.pointPolygonTest(abs_polygon, bottom_center, False) >= 0
+                if not in_zone:
+                    has_violation = False
+            
+            # Rendering
+            color = (0, 0, 255) if has_violation else ((0, 255, 0) if in_zone else (128, 128, 128))
             cv2.rectangle(frame, (x1, y1), (x2, y2), color, 2)
-            cv2.putText(frame, f"ID:{pid} {worn}", (x1, y1 - 8), cv2.FONT_HERSHEY_SIMPLEX, 0.6, color, 2)
+            text_prefix = f"ID:{pid}" if in_zone else f"ID:{pid} [OUTSIDE]"
+            cv2.putText(frame, f"{text_prefix} {worn}", (x1, y1 - 8), cv2.FONT_HERSHEY_SIMPLEX, 0.6, color, 2)
             
             # Temporal Confirmation
             if validator.update(pid, has_violation, avg_conf):
@@ -251,17 +303,52 @@ def main():
                     "model_version": ACTIVE_VERSION
                 }
                 
-                # Async-like fire-and-forget to avoid blocking the FPS
                 import threading
                 threading.Thread(target=post_violation, args=(event_payload,)).start()
 
         writer.write(frame)
+        try:
+            final_frame_path = os.path.join(PROJECT_ROOT, "outputs", "latest_frame.jpg")
+            # Write directly to avoid Windows os.replace lock issues
+            cv2.imwrite(final_frame_path, frame)
+        except Exception as e:
+            # Safely skip if FastAPI is actively reading
+            pass
+        
+        frame_latency_ms = (time.time() - frame_start_time) * 1000
+        
+        # Post metrics every 30 frames
+        if metrics["frames"] % 30 == 0:
+            current_time = time.time()
+            current_fps = 30 / (current_time - last_metric_time)
+            last_metric_time = current_time
+            import threading
+            metrics_payload = {
+                "fps": current_fps,
+                "latency_ms": frame_latency_ms,
+                "model_version": ACTIVE_VERSION
+            }
+            threading.Thread(target=post_metrics, args=(metrics_payload,)).start()
+            
+            if args.job_id:
+                # Update job progress and check for early stop
+                current_pos = int(cap.get(cv2.CAP_PROP_POS_FRAMES))
+                job_status = update_job_progress(args.job_id, current_pos, total_frames, current_fps)
+                if job_status == "stopped":
+                    logger.info("Job was stopped via API.")
+                    break
 
     cap.release()
     writer.release()
     
     elapsed = time.time() - start_time
     avg_fps = metrics["frames"] / elapsed if elapsed > 0 else 0
+    
+    if args.job_id:
+        # Avoid overriding 'stopped' if it was cancelled
+        current_status = update_job_progress(args.job_id, total_frames, total_frames, avg_fps)
+        if current_status != "stopped":
+            update_job_progress(args.job_id, total_frames, total_frames, avg_fps, status="completed")
 
     logger.info("Pipeline processing completed.")
     logger.info(f"Total Frames: {metrics['frames']}")

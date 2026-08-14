@@ -6,6 +6,7 @@ class ZoneBase(BaseModel):
     name: str
     type: str
     required_ppe: List[str]
+    polygon: Optional[List[List[float]]] = None
     confidence_threshold: float
     min_seconds_in_zone: float
     is_active: bool
@@ -13,8 +14,40 @@ class ZoneBase(BaseModel):
 class ZoneCreate(ZoneBase):
     pass
 
+class ZoneUpdate(BaseModel):
+    name: Optional[str] = None
+    type: Optional[str] = None
+    required_ppe: Optional[List[str]] = None
+    polygon: Optional[List[List[float]]] = None
+    confidence_threshold: Optional[float] = None
+    min_seconds_in_zone: Optional[float] = None
+    is_active: Optional[bool] = None
+
 class Zone(ZoneBase):
     id: int
+    model_config = ConfigDict(from_attributes=True)
+
+class VideoBase(BaseModel):
+    filename: str
+    filepath: str
+
+class Video(VideoBase):
+    id: str
+    uploaded_at: datetime
+    model_config = ConfigDict(from_attributes=True)
+
+class ProcessingJobBase(BaseModel):
+    video_id: str
+
+class ProcessingJob(ProcessingJobBase):
+    id: str
+    status: str
+    progress: int
+    total_frames: int
+    fps: float
+    started_at: Optional[datetime] = None
+    completed_at: Optional[datetime] = None
+    error_message: Optional[str] = None
     model_config = ConfigDict(from_attributes=True)
 
 class CameraBase(BaseModel):
@@ -44,9 +77,17 @@ class ViolationEventBase(BaseModel):
     evidence_image_path: str
     evidence_video_path: Optional[str] = None
     model_version: str
+    feedback_correct: Optional[bool] = None
+    feedback_helmet: Optional[bool] = None
+    feedback_vest: Optional[bool] = None
 
 class ViolationEventCreate(ViolationEventBase):
     pass
+
+class ViolationFeedbackUpdate(BaseModel):
+    feedback_correct: bool
+    feedback_helmet: bool
+    feedback_vest: bool
 
 class ViolationEvent(ViolationEventBase):
     id: int
