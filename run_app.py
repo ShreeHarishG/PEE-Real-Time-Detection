@@ -15,14 +15,50 @@ def main():
     scripts_dir = os.path.join(backend_dir, "scripts")
     src_dir = os.path.join(root_dir, "notebook", "src")
 
-    # Look for virtual environment python
-    venv_python = os.path.join(root_dir, "ppe-env", "Scripts", "python.exe")
-    python_exe = venv_python if os.path.exists(venv_python) else sys.executable
+    # Look for virtual environment python (Windows vs Linux)
+    venv_python_win = os.path.join(root_dir, "ppe-env", "Scripts", "python.exe")
+    venv_python_lin = os.path.join(root_dir, "ppe-env", "bin", "python")
+    
+    if os.path.exists(venv_python_win):
+        python_exe = venv_python_win
+    elif os.path.exists(venv_python_lin):
+        python_exe = venv_python_lin
+    else:
+        python_exe = sys.executable
+
+    print("=========================================")
+    print("EdgeVision Deployment Manager")
+    print("=========================================")
+    print("Select deployment mode:")
+    print("1. New Deployment (Install dependencies & run)")
+    print("2. Old Deployment (Just run)")
+    
+    choice = ""
+    while choice not in ["1", "2"]:
+        choice = input("Enter choice (1 or 2): ").strip()
+
+    if choice == "1":
+        print("\n=========================================")
+        print("Running Installations...")
+        print("=========================================")
+        
+        # Install Python dependencies
+        req_path = os.path.join(root_dir, "notebook", "requirements.txt")
+        if os.path.exists(req_path):
+            print("-> Installing Python dependencies...")
+            subprocess.run([python_exe, "-m", "pip", "install", "-r", req_path], check=True)
+        else:
+            print("-> Warning: notebook/requirements.txt not found!")
+            
+        # Install NPM dependencies
+        print("-> Installing Next.js dependencies...")
+        subprocess.run(["npm", "install"], cwd=frontend_dir, shell=True, check=True)
+        print("Installations completed.\n")
 
     print("=========================================")
     print("Starting EdgeVision Servers...")
-    if os.path.exists(venv_python):
-        print(f"Using virtual environment: {venv_python}")
+    if python_exe != sys.executable:
+        print(f"Using virtual environment: {python_exe}")
     print("=========================================\n")
 
     # 0. Start Database

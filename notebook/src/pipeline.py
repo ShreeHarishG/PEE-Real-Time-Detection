@@ -46,8 +46,7 @@ PPE_MODEL_PATH = os.path.join(PROJECT_ROOT, MODEL_CFG.get("path", "models/ppe_v3
 PERSON_MODEL_PATH = os.path.join(PROJECT_ROOT, "models", "yolov8n.pt")
 
 
-DEFAULT_INPUT_VIDEO = os.path.join(PROJECT_ROOT, "..", "docs", "test.mp4")
-OUTPUT_VIDEO = os.path.join(PROJECT_ROOT, "outputs", "results", "annotated_output_functional.mp4")
+DEFAULT_INPUT_VIDEO = os.path.join(PROJECT_ROOT, "..", "14_DEMO", "test.mp4")
 OUTPUT_LOG = os.path.join(PROJECT_ROOT, "outputs", "results", "violations_functional.csv")
 EVIDENCE_DIR = os.path.join(PROJECT_ROOT, "outputs", "evidence")
 
@@ -64,7 +63,7 @@ ZONE_RULES = {
 ACTIVE_ZONE = "construction"
 
 # Ensure output directories exist
-os.makedirs(os.path.dirname(OUTPUT_VIDEO), exist_ok=True)
+os.makedirs(os.path.join(PROJECT_ROOT, "outputs", "results"), exist_ok=True)
 os.makedirs(os.path.dirname(OUTPUT_LOG), exist_ok=True)
 os.makedirs(EVIDENCE_DIR, exist_ok=True)
 
@@ -125,8 +124,11 @@ def associate_ppe_to_persons(person_boxes: List[List[float]], person_ids: List[i
 # MAIN INFERENCE LOOP
 # ==============================================================================
 import requests
+import os
 
-def get_zone_rules_from_api(api_url="http://localhost:8000/api/v1/zones"):
+API_BASE_URL = os.environ.get("API_BASE_URL", "http://localhost:8000")
+
+def get_zone_rules_from_api(api_url=f"{API_BASE_URL}/api/v1/zones"):
     try:
         response = requests.get(api_url, timeout=2)
         if response.status_code == 200:
@@ -136,21 +138,27 @@ def get_zone_rules_from_api(api_url="http://localhost:8000/api/v1/zones"):
         logger.warning(f"Failed to fetch zones from API: {e}. Falling back to default.")
     return {"construction": {"required": ["helmet", "vest"], "id": 1, "polygon": None}}
 
-def post_violation(event_data, api_url="http://localhost:8000/api/v1/violations"):
+def post_violation(event_data, api_url=f"{API_BASE_URL}/api/v1/violations"):
     try:
         requests.post(api_url, json=event_data, timeout=1)
     except Exception as e:
         logger.error(f"Failed to POST violation event: {e}")
 
-def post_metrics(metrics_data, api_url="http://localhost:8000/api/v1/metrics"):
+def post_metrics(metrics_data, api_url=f"{API_BASE_URL}/api/v1/metrics"):
     try:
         requests.post(api_url, json=metrics_data, timeout=1)
     except Exception as e:
         logger.debug(f"Failed to POST metrics: {e}")
 
-def update_job_progress(job_id, progress, total_frames, fps, status=None, api_url="http://localhost:8000/api/v1/jobs"):
+def update_job_progress(job_id, progress, total_frames, fps, workers_detected=0, violations_detected=0, status=None, api_url=f"{API_BASE_URL}/api/v1/jobs"):
     try:
-        payload = {"progress": progress, "total_frames": total_frames, "fps": fps}
+        payload = {
+            "progress": progress, 
+            "total_frames": total_frames, 
+            "fps": fps,
+            "workers_detected": workers_detected,
+            "violations_detected": violations_detected
+        }
         if status:
             payload["status"] = status
         response = requests.put(f"{api_url}/{job_id}/progress", json=payload, timeout=1)
@@ -192,10 +200,15 @@ def main():
     total_frames = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
     w = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
     h = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
-    writer = cv2.VideoWriter(OUTPUT_VIDEO, cv2.VideoWriter_fourcc(*"mp4v"), fps, (w, h))
+    output_video_path = os.path.join(PROJECT_ROOT, "outputs", "results", f"{args.job_id}.mp4") if args.job_id else os.path.join(PROJECT_ROOT, "outputs", "results", "annotated_output_functional.mp4")
+    writer = cv2.VideoWriter(output_video_path, cv2.VideoWriter_fourcc(*"avc1"), fps, (w, h))
 
     validator = TemporalValidator(fps=fps)
     log_rows = []
+    
+    evidence_dir_rel = os.path.join("outputs", "evidence", args.job_id) if args.job_id else os.path.join("outputs", "evidence")
+    evidence_dir_abs = os.path.join(PROJECT_ROOT, evidence_dir_rel)
+    os.makedirs(evidence_dir_abs, exist_ok=True)
     
     # Fetch Zones
     dynamic_zones = get_zone_rules_from_api()
@@ -211,7 +224,8 @@ def main():
         "frames": 0,
         "frames_zero_people": 0,
         "person_detections": 0,
-        "unique_track_ids": set()
+        "unique_track_ids": set(),
+        "confirmed_violations": 0
     }
     
     logger.info("Processing video stream...")
@@ -282,14 +296,17 @@ def main():
             
             # Temporal Confirmation
             if validator.update(pid, has_violation, avg_conf):
+                metrics["confirmed_violations"] += 1
                 event_id = str(uuid.uuid4())[:8]
-                rel_ev_path = os.path.join("outputs", "evidence", f"{event_id}.jpg")
+                rel_ev_path = os.path.join(evidence_dir_rel, f"{event_id}.jpg")
                 abs_ev_path = os.path.join(PROJECT_ROOT, rel_ev_path)
                 
                 crop = frame[max(0, y1):y2, max(0, x1):x2]
                 if crop.size > 0:
                     cv2.imwrite(abs_ev_path, crop)
                     
+                video_timestamp_sec = float(cap.get(cv2.CAP_PROP_POS_FRAMES)) / float(fps)
+                
                 event_payload = {
                     "event_id": event_id,
                     "camera_id": 1, # Default mock camera
@@ -298,9 +315,11 @@ def main():
                     "violation_type": "missing_ppe",
                     "missing_ppe": missing,
                     "confidence": round(float(avg_conf), 2),
-                    "evidence_image_path": rel_ev_path,
+                    "evidence_image_path": rel_ev_path.replace("\\", "/"),
                     "evidence_video_path": None,
-                    "model_version": ACTIVE_VERSION
+                    "model_version": ACTIVE_VERSION,
+                    "job_id": args.job_id,
+                    "video_timestamp_sec": round(video_timestamp_sec, 3)
                 }
                 
                 import threading
@@ -333,9 +352,14 @@ def main():
             if args.job_id:
                 # Update job progress and check for early stop
                 current_pos = int(cap.get(cv2.CAP_PROP_POS_FRAMES))
-                job_status = update_job_progress(args.job_id, current_pos, total_frames, current_fps)
+                workers_detected = len(metrics["unique_track_ids"])
+                violations_detected = metrics["confirmed_violations"]
+                job_status = update_job_progress(
+                    args.job_id, current_pos, total_frames, current_fps, 
+                    workers_detected=workers_detected, violations_detected=violations_detected
+                )
                 if job_status == "stopped":
-                    logger.info("Job was stopped via API.")
+                    logger.info("Job stopped via API.")
                     break
 
     cap.release()
@@ -345,10 +369,13 @@ def main():
     avg_fps = metrics["frames"] / elapsed if elapsed > 0 else 0
     
     if args.job_id:
-        # Avoid overriding 'stopped' if it was cancelled
-        current_status = update_job_progress(args.job_id, total_frames, total_frames, avg_fps)
-        if current_status != "stopped":
-            update_job_progress(args.job_id, total_frames, total_frames, avg_fps, status="completed")
+        workers_detected = len(metrics["unique_track_ids"])
+        violations_detected = metrics["confirmed_violations"]
+        update_job_progress(
+            args.job_id, total_frames, total_frames, avg_fps, 
+            workers_detected=workers_detected, violations_detected=violations_detected, status="completed"
+        )
+        logger.info(f"Job {args.job_id} completed successfully.")
 
     logger.info("Pipeline processing completed.")
     logger.info(f"Total Frames: {metrics['frames']}")
@@ -357,4 +384,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-

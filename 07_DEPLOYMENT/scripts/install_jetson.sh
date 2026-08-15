@@ -25,6 +25,7 @@ mkdir -p /var/log/edgevision
 echo "Deploying application to /opt/edgevision..."
 sudo cp -r ../src /opt/edgevision/
 sudo cp -r ../config /opt/edgevision/
+sudo cp -r ../models /opt/edgevision/
 sudo cp ../deployment/edgevision.service /etc/systemd/system/
 
 echo "Setup complete. To start the service, run:"

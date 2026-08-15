@@ -50,6 +50,9 @@ class ProcessingJob(Base):
     started_at = Column(DateTime, nullable=True)
     completed_at = Column(DateTime, nullable=True)
     error_message = Column(String, nullable=True)
+    workers_detected = Column(Integer, default=0)
+    violations_detected = Column(Integer, default=0)
+    output_video_path = Column(String, nullable=True)
     
     video = relationship("Video", back_populates="jobs")
 
@@ -68,6 +71,8 @@ class ViolationEvent(Base):
     evidence_video_path = Column(String, nullable=True)
     acknowledged = Column(Boolean, default=False)
     model_version = Column(String)
+    job_id = Column(String, ForeignKey("processing_jobs.id"), nullable=True)
+    video_timestamp_sec = Column(Float, nullable=True)
     
     # Feedback fields for Human-in-the-loop training
     feedback_correct = Column(Boolean, nullable=True)

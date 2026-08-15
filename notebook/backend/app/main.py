@@ -3,6 +3,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session
 from sqlalchemy import func
 from typing import List, Optional
+from pydantic import BaseModel
 from datetime import datetime, timedelta
 import os
 import time
@@ -39,6 +40,9 @@ def read_health():
 outputs_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", "outputs"))
 os.makedirs(os.path.join(outputs_dir, "evidence"), exist_ok=True)
 app.mount("/evidence", StaticFiles(directory=os.path.join(outputs_dir, "evidence")), name="evidence")
+
+os.makedirs(os.path.join(outputs_dir, "results"), exist_ok=True)
+app.mount("/results", StaticFiles(directory=os.path.join(outputs_dir, "results")), name="results")
 
 import asyncio
 
@@ -103,6 +107,40 @@ def create_camera(camera: schemas.CameraCreate, db: Session = Depends(database.g
     db.refresh(db_camera)
     return db_camera
 
+# --- Zones ---
+@app.get("/api/v1/zones", response_model=List[schemas.Zone])
+def get_zones(db: Session = Depends(database.get_db)):
+    zones = db.query(models.Zone).all()
+    if not zones:
+        # Create default zone if none exists
+        default_zone = models.Zone(
+            name="construction",
+            type="construction",
+            required_ppe=["helmet", "vest"],
+            confidence_threshold=0.25,
+            min_seconds_in_zone=2.0,
+            is_active=True
+        )
+        db.add(default_zone)
+        db.commit()
+        db.refresh(default_zone)
+        return [default_zone]
+    return zones
+
+@app.put("/api/v1/zones/{id}", response_model=schemas.Zone)
+def update_zone(id: int, zone_update: schemas.ZoneUpdate, db: Session = Depends(database.get_db)):
+    db_zone = db.query(models.Zone).filter(models.Zone.id == id).first()
+    if not db_zone:
+        raise HTTPException(status_code=404, detail="Zone not found")
+        
+    update_data = zone_update.dict(exclude_unset=True)
+    for key, value in update_data.items():
+        setattr(db_zone, key, value)
+        
+    db.commit()
+    db.refresh(db_zone)
+    return db_zone
+
 # --- Videos & Jobs ---
 UPLOAD_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", "data", "uploads"))
 os.makedirs(UPLOAD_DIR, exist_ok=True)
@@ -159,12 +197,17 @@ def process_video(video_id: str, background_tasks: BackgroundTasks, db: Session 
         filename = f"{filename_prefix}.mp4"
         
         if filename_prefix == "vidssave":
-            video_path = os.path.join(root_dir, "docs", "positive_test", "vidssave.com PPE Safety Video.✅#safetyfirst #ppe #video 👷_♂️👷✅💟 #viralvideo 720P.mp4")
+            video_path = os.path.join(root_dir, "14_DEMO", "vidssave.com PPE Safety Video.✅#safetyfirst #ppe #video 👷_♂️👷✅💟 #viralvideo 720P.mp4")
             filename = "vidssave.mp4"
         else:
+            video_path = os.path.join(root_dir, "14_DEMO", filename)
+            
+        if not os.path.exists(video_path):
+            # Fallback to older docs folder if it was placed there
             video_path = os.path.join(root_dir, "docs", filename)
             
         if not os.path.exists(video_path):
+            raise HTTPException(status_code=404, detail=f"Demo video not found at {video_path}")
             raise HTTPException(status_code=404, detail=f"Demo video not found at {video_path}")
         
         # Ensure demo video exists in DB to satisfy foreign key constraint
@@ -200,12 +243,13 @@ def get_job(job_id: str, db: Session = Depends(database.get_db)):
         raise HTTPException(status_code=404, detail="Job not found")
     return db_job
 
-from pydantic import BaseModel
 class JobProgressUpdate(BaseModel):
     progress: int
     total_frames: int
     fps: float
     status: Optional[str] = None
+    workers_detected: Optional[int] = 0
+    violations_detected: Optional[int] = 0
 
 @app.put("/api/v1/jobs/{job_id}/progress")
 def update_job_progress(job_id: str, update: JobProgressUpdate, db: Session = Depends(database.get_db)):
@@ -216,13 +260,28 @@ def update_job_progress(job_id: str, update: JobProgressUpdate, db: Session = De
     db_job.progress = update.progress
     db_job.total_frames = update.total_frames
     db_job.fps = update.fps
+    db_job.workers_detected = update.workers_detected
+    db_job.violations_detected = update.violations_detected
     if update.status:
         db_job.status = update.status
         if update.status in ["completed", "failed", "stopped"]:
             db_job.completed_at = datetime.utcnow()
+            db_job.output_video_path = os.path.join("outputs", "results", f"{job_id}.mp4")
             
     db.commit()
     return {"status": "ok", "job_status": db_job.status}
+
+@app.get("/api/v1/jobs/{job_id}/violations", response_model=List[schemas.ViolationEvent])
+def get_job_violations(job_id: str, db: Session = Depends(database.get_db)):
+    return db.query(models.ViolationEvent).filter(models.ViolationEvent.job_id == job_id).order_by(models.ViolationEvent.timestamp.asc()).all()
+
+@app.get("/api/v1/jobs/{job_id}/video")
+def get_job_video(job_id: str, db: Session = Depends(database.get_db)):
+    db_job = db.query(models.ProcessingJob).filter(models.ProcessingJob.id == job_id).first()
+    if not db_job or not db_job.output_video_path:
+        raise HTTPException(status_code=404, detail="Video not found")
+    filename = os.path.basename(db_job.output_video_path)
+    return {"url": f"http://localhost:8000/results/{filename}"}
 
 @app.post("/api/v1/jobs/{job_id}/stop")
 def stop_job(job_id: str, db: Session = Depends(database.get_db)):

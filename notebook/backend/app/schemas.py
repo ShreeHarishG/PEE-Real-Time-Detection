@@ -48,6 +48,9 @@ class ProcessingJob(ProcessingJobBase):
     started_at: Optional[datetime] = None
     completed_at: Optional[datetime] = None
     error_message: Optional[str] = None
+    workers_detected: Optional[int] = 0
+    violations_detected: Optional[int] = 0
+    output_video_path: Optional[str] = None
     model_config = ConfigDict(from_attributes=True)
 
 class CameraBase(BaseModel):
@@ -80,6 +83,8 @@ class ViolationEventBase(BaseModel):
     feedback_correct: Optional[bool] = None
     feedback_helmet: Optional[bool] = None
     feedback_vest: Optional[bool] = None
+    job_id: Optional[str] = None
+    video_timestamp_sec: Optional[float] = None
 
 class ViolationEventCreate(ViolationEventBase):
     pass
