@@ -1,0 +1,5 @@
+# EdgeVision Standard Linux Requirements
+
+# Standard PyTorch with CPU/CUDA support for Linux (x86_64)
+torch>=2.0.0
+torchvision

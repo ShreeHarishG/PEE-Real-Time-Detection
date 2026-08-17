@@ -1,0 +1,5 @@
+# EdgeVision Windows Requirements
+
+# Standard PyTorch with CUDA support (if available) for Windows
+torch>=2.0.0
+torchvision

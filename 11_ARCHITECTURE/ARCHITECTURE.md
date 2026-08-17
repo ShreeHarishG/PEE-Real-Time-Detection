@@ -2,8 +2,8 @@
 
 ```mermaid
 flowchart TD
-    A[Camera / Video] --> B(YOLOv8n Person Tracking\nByteTrack)
-    B --> C(YOLOv8s V3-HN PPE Detection)
+    A[Camera / Video] --> B(YOLO11n Person Tracking\nByteTrack)
+    B --> C(YOLO11s V3-HN PPE Detection)
     C --> D(Spatial Person-PPE Association)
     D --> E(Zone / Rule Engine)
     E --> F(Temporal Validation\nHysteresis)
