@@ -50,7 +50,7 @@ def seed_data():
             camera = models.Camera(
                 name="Main Floor (Demo)",
                 source_type="LOCAL_VIDEO",
-                local_video_path="docs/test.mp4",
+                local_video_path="14_DEMO/test.mp4",
                 is_active=True,
                 zone_id=zone.id if zone else None
             )

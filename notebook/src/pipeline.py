@@ -457,10 +457,11 @@ def main():
 
         if writer is not None:
             writer.write(frame)
-        if is_live_stream:
-            output_frame_written = publish_live_frame(frame, args.job_id)
-            logger.debug("[STREAM] job_id=%s frame=%s output_frame_written=%s", args.job_id, metrics["frames"], output_frame_written)
-        else:
+        
+        if args.job_id:
+            publish_live_frame(frame, args.job_id)
+            
+        if not is_live_stream:
             # Retain the legacy output for completed-video UI compatibility.
             try:
                 cv2.imwrite(os.path.join(PROJECT_ROOT, "outputs", "latest_frame.jpg"), frame)
