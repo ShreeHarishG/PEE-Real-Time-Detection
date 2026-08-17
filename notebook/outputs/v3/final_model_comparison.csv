@@ -1,0 +1,3 @@
+model,mAP50,mAP50_95,helmet_precision,helmet_recall,helmet_AP50,no_helmet_precision,no_helmet_recall,no_helmet_AP50,vest_precision,vest_recall,vest_AP50,positive_helmet_detection,positive_vest_detection,helmet_false_positives,vest_false_positives,confirmed_violations,warm_fps,p95_latency,selected
+V2,0.844464,0.501249,0.911551,0.845582,0.901534,0.818863,0.770183,0.808117,0.783390,0.766667,0.823742,0.5862,0.6140,154,10,14,24.3,N/A,FALSE
+V3-HN,0.841955,0.487671,0.910693,0.823261,0.886480,0.853522,0.813863,0.841718,0.788619,0.737585,0.797667,0.6379,0.6667,0,0,14,16.2,134.63,TRUE

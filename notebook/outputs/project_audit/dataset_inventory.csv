@@ -1,0 +1,7 @@
+path,size_GB,images,classification,notes
+edgevision_v2/datasets/merged/,4.29,22354,V2_BASELINE,Training dataset
+datasets/HardHat-Vest/,4.27,22141,V2_BASELINE,Raw source dataset
+datasets/construction-ppe/,0.17,1416,V2_BASELINE,Raw source dataset
+edgevision_v2/datasets/hard_negative_frames/,0,73,V3_EXPERIMENT,Extracted from merged_v21
+harness-1/,0.01,233,ARCHIVED,Incompatible class mapping
+fp_crops/,0,1540,V2_BASELINE,False positive crops for analysis

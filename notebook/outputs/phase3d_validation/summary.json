@@ -1,0 +1,15 @@
+{
+    "total_frames": 221,
+    "total_confirmed_violations": 15,
+    "unique_person_ids": 31,
+    "duplicate_event_ids": 0,
+    "empty_missing_ppe_events": 0,
+    "missing_evidence_files": 0,
+    "unsupported_ppe_classes": 0,
+    "helmet_detections": 471,
+    "vest_detections": 27,
+    "average_fps": 26.56,
+    "min_fps": 0.52,
+    "max_fps": 62.05,
+    "p95_frame_latency_ms": 41.15
+}

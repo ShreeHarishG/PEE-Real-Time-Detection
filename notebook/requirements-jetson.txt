@@ -1,0 +1,5 @@
+# EdgeVision Jetson Requirements
+
+# IMPORTANT: Do not install torch/torchvision via pip on Jetson!
+# These must be provided by the NVIDIA JetPack L4T environment.
+# If they are missing, please flash your Jetson with JetPack 5.x+

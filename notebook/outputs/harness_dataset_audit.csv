@@ -1,0 +1,2 @@
+class,train_images,train_instances,val_images,val_instances,test_images,test_instances,mean_box_area,small_box_percentage
+safety_harness,0,0,0,0,0,0,0.0,0.0

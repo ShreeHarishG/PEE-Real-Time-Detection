@@ -1,0 +1,17 @@
+# EdgeVision V3-HN Common Requirements (Platform Agnostic)
+
+# --- Core ML & Computer Vision ---
+ultralytics>=8.0.0
+opencv-python-headless>=4.6.0
+numpy>=1.23.0
+pyyaml>=6.0
+pandas>=1.5.0
+requests>=2.28.0
+
+# --- FastAPI Backend & Database ---
+fastapi>=0.100.0
+uvicorn[standard]>=0.23.0
+sqlalchemy>=2.0.0
+psycopg2-binary>=2.9.7
+pydantic>=2.0.0
+python-multipart>=0.0.6

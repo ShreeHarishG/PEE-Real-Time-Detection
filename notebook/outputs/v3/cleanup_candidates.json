@@ -1,0 +1,51 @@
+[
+    {
+        "path": "notebook/archive/loose_scripts/",
+        "reason": "14 obsolete diagnostic/benchmark scripts superseded by Phase 3 scripts. Already safely moved to archive.",
+        "size": "35 KB",
+        "safe_to_delete": true,
+        "dependency_check": "Not imported or referenced by any active V2 pipeline scripts or notebooks."
+    },
+    {
+        "path": "notebook/archive/tracker_configs/",
+        "reason": "5 old ByteTrack YAMLs and 1 BoTSORT-ReID config from Phase 2 experiments. Already safely moved to archive.",
+        "size": "2 KB",
+        "safe_to_delete": true,
+        "dependency_check": "V2 uses the built-in 'bytetrack.yaml'. These are not referenced."
+    },
+    {
+        "path": "notebook/archive/models/",
+        "reason": "yolov8s.pt and yolo26n.pt. Unused in V2.",
+        "size": "28.1 MB",
+        "safe_to_delete": false,
+        "dependency_check": "yolov8s.pt may be required for V3 Experiment 5 (Architecture sweep). Do not delete yet."
+    },
+    {
+        "path": "notebook/archive/v1/",
+        "reason": "V1 notebook and outputs.",
+        "size": "1.3 MB",
+        "safe_to_delete": true,
+        "dependency_check": "Completely superseded by V2 pipeline."
+    },
+    {
+        "path": "notebook/archive/v2_training_run/",
+        "reason": "Original V2 training YOLO runs/detect folder.",
+        "size": "218.6 MB",
+        "safe_to_delete": false,
+        "dependency_check": "Contains training curves, hyperparameters, and reproducible evidence of the V2 baseline training run. Should be archived permanently, not deleted."
+    },
+    {
+        "path": "docs/notebook/",
+        "reason": "Contains duplicate copies of V1 notebook, yolo26n.pt, and an old 129-image dataset.",
+        "size": "6.8 MB",
+        "safe_to_delete": true,
+        "dependency_check": "Unreferenced duplicates."
+    },
+    {
+        "path": "notebook/harness-1/",
+        "reason": "Incompatible Roboflow dataset with 2 classes.",
+        "size": "12 MB",
+        "safe_to_delete": true,
+        "dependency_check": "Not part of merged dataset. Incompatible class mapping."
+    }
+]

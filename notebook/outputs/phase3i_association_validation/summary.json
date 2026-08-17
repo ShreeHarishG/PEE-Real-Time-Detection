@@ -1,0 +1,44 @@
+{
+    "baseline": {
+        "person_detections": 1955,
+        "person_fp_candidates_filtered": 175,
+        "stable_person_tracks": 1780,
+        "helmet_detections": 471,
+        "vest_detections": 27,
+        "ppe_associations": 1022,
+        "association_failures": 73,
+        "cross_assignment_candidates": 14,
+        "confirmed_violations": 14,
+        "duplicate_events": 0,
+        "empty_missing_ppe_events": 0,
+        "average_fps": 17.1244190469697,
+        "warm_fps": 22.281667739803495,
+        "min_fps": 0.32987144250072564,
+        "p95_latency": 56.02480001107324
+    },
+    "proposed": {
+        "person_detections": 1955,
+        "person_fp_candidates_filtered": 175,
+        "stable_person_tracks": 1780,
+        "helmet_detections": 471,
+        "vest_detections": 27,
+        "ppe_associations": 1036,
+        "association_failures": 59,
+        "cross_assignment_candidates": 14,
+        "confirmed_violations": 14,
+        "duplicate_events": 0,
+        "empty_missing_ppe_events": 0,
+        "average_fps": 17.162782123100882,
+        "warm_fps": 22.348010250801938,
+        "min_fps": 0.32987367322633404,
+        "p95_latency": 55.637099998421036
+    },
+    "audit": {
+        "prev_unassoc": 70,
+        "recovered_total": 14,
+        "recovered_valid": 12,
+        "recovered_false": 2,
+        "recovered_fake_dep": 0,
+        "still_unassociated": 56
+    }
+}

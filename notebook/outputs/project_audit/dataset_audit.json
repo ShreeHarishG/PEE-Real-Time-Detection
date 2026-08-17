@@ -1,0 +1,61 @@
+{
+    "dataset_path": "W:\\3 projects\\Building\\Tfrenzy\\notebook\\edgevision_v2\\datasets\\merged",
+    "splits": {
+        "train": {
+            "images": 17452,
+            "label_files": 17452,
+            "zero_label_files": 214,
+            "total_boxes": 148487,
+            "class_counts": {
+                "helmet": 43905,
+                "vest": 6326,
+                "no_helmet": 98256
+            },
+            "area_stats": {
+                "mean": 0.012791488334885142,
+                "median": 0.0020668694241068658,
+                "min": 1.9531250000000004e-05,
+                "max": 0.9933035294117647
+            }
+        },
+        "val": {
+            "images": 2438,
+            "label_files": 2438,
+            "zero_label_files": 1,
+            "total_boxes": 21032,
+            "class_counts": {
+                "no_helmet": 13576,
+                "helmet": 6586,
+                "vest": 870
+            },
+            "area_stats": {
+                "mean": 0.012570814181657614,
+                "median": 0.002080251634280757,
+                "min": 9.177118175429156e-06,
+                "max": 0.992466882305723
+            }
+        },
+        "test": {
+            "images": 2464,
+            "label_files": 2464,
+            "zero_label_files": 11,
+            "total_boxes": 20193,
+            "class_counts": {
+                "helmet": 6749,
+                "vest": 935,
+                "no_helmet": 12509
+            },
+            "area_stats": {
+                "mean": 0.013524916615968089,
+                "median": 0.002384858204636502,
+                "min": 2.664298399870132e-05,
+                "max": 0.9863543501232828
+            }
+        }
+    },
+    "leakage": {
+        "train_val": 0,
+        "train_test": 0,
+        "val_test": 0
+    }
+}

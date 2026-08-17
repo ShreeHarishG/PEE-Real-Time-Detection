@@ -1,0 +1,2 @@
+experiment,model,dataset,imgsz,epochs,precision,recall,mAP50,mAP50_95,helmet_precision,helmet_recall,vest_precision,vest_recall,helmet_false_positives,vest_false_positives,avg_fps,warm_fps,p95_latency,VRAM_GB,model_path,status
+exp0_v2_baseline,YOLOv8n,merged,512,30,,,0.844,0.501,,,,,1476,137,26.56,22.35,55.64,,edgevision_v2/models/ppe_best.pt,V2_BASELINE

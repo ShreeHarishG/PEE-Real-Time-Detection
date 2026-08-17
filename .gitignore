@@ -1,0 +1,111 @@
+# Environment & Secrets
+.env
+.env.local
+.env.*.local
+.secret/
+*.pem
+
+# Python & Environment
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# Virtual Environments
+venv/
+.venv/
+env/
+.env/
+ppe-env/
+pip-wheel-metadata/
+
+# Pytest / Coverage
+.pytest_cache/
+.tox/
+.nox/
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+*.py,cover
+.hypothesis/
+
+# Jupyter Notebook
+.ipynb_checkpoints
+*.ipynb_checkpoints/
+profile_default/
+ipython_config.py
+
+# Node.js / Frontend
+node_modules/
+jspm_packages/
+.npm/
+.next/
+out/
+build/
+dist/
+.eslintcache
+.stylelintcache
+
+# Databases
+*.db
+*.sqlite3
+
+# OS Generated
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+desktop.ini
+
+# IDEs and Editors
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.project
+.classpath
+.settings/
+*.sublime-workspace
+*.sublime-project
+
+# Heavy Machine Learning Artifacts
+# Note: Production (.pt) models in 02_MODELS are tracked.
+*.engine
+*.onnx
+*.weights
+*.pb
+
+# Logs and Media (Ignoring raw dumps, preserving charts/evidence)
+*.log
+*.mp4
+*.avi
+# Ignore raw large datasets, but keep the documentation folder
+notebook/edgevision_v2/datasets/
+notebook/datasets/
+# (If there are other large dataset dumps, add them here)

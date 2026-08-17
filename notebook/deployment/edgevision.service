@@ -1,0 +1,19 @@
+[Unit]
+Description=EdgeVision AI Inference Pipeline
+After=network.target
+StartLimitIntervalSec=0
+
+[Service]
+Type=simple
+Restart=always
+RestartSec=5
+User=jetson
+WorkingDirectory=/opt/edgevision/src
+# Uncomment and change this if the backend is on a different machine:
+# Environment="API_BASE_URL=http://<YOUR_BACKEND_IP>:8000"
+ExecStart=/usr/bin/python3 pipeline.py
+StandardOutput=append:/var/log/edgevision/pipeline.log
+StandardError=append:/var/log/edgevision/pipeline_error.log
+
+[Install]
+WantedBy=multi-user.target

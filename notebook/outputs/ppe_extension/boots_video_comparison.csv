@@ -1,0 +1,3 @@
+model,helmet_fp,vest_fp,boots_fp,violations,assoc_fails,fps,latency
+V3-HN,0,0,0,1955,0,30.214439780919353,43.86782646179199
+V3-Boots,5,3,46,1541,54,27.821209384572306,55.37128448486328

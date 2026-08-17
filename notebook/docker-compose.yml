@@ -1,0 +1,27 @@
+services:
+  db:
+    image: postgres:15-alpine
+    container_name: edgevision_db
+    restart: always
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-edgevision}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-edgevision_password}
+      POSTGRES_DB: ${POSTGRES_DB:-edgevision}
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  # Uncomment when building backend in Docker
+  # backend:
+  #   build: ./backend
+  #   container_name: edgevision_backend
+  #   ports:
+  #     - "8000:8000"
+  #   depends_on:
+  #     - db
+  #   environment:
+  #     DATABASE_URL: postgresql://${POSTGRES_USER:-edgevision}:${POSTGRES_PASSWORD:-edgevision_password}@db:5432/${POSTGRES_DB:-edgevision}
+
+volumes:
+  postgres_data:

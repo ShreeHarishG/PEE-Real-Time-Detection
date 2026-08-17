@@ -1,0 +1,12 @@
+{
+    "total_events": 13,
+    "genuine_violations": 3,
+    "temporary_misdetections": 1,
+    "association_errors": 5,
+    "tracking_errors": 0,
+    "occlusion_events": 4,
+    "insufficient_evidence": 0,
+    "false_violation_rate": 0.7692307692307693,
+    "helmet_miss_rate_during_compliant_tracks": 0.1017,
+    "vest_miss_rate_during_compliant_tracks": 0.1438
+}
