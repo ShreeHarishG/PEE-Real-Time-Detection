@@ -128,7 +128,7 @@ def associate_ppe_to_persons(person_boxes: List[List[float]], person_ids: List[i
 import requests
 import os
 
-API_BASE_URL = os.environ.get("API_BASE_URL", "http://localhost:8000")
+API_BASE_URL = os.environ.get("API_BASE_URL", "http://127.0.0.1:8000")
 
 def get_zone_rules_from_api(api_url=f"{API_BASE_URL}/api/v1/zones"):
     try:
@@ -138,7 +138,7 @@ def get_zone_rules_from_api(api_url=f"{API_BASE_URL}/api/v1/zones"):
             return {z["id"]: {"required": z["required_ppe"], "name": z["name"], "polygon": z.get("polygon")} for z in zones}
     except Exception as e:
         logger.warning(f"Failed to fetch zones from API: {e}. Falling back to default.")
-    return {1: {"required": ["helmet", "vest"], "name": "construction", "polygon": None}}
+    return {1: {"required": ["helmet", "vest", "boots"], "name": "construction", "polygon": None}}
 
 def post_violation(event_data, api_url=f"{API_BASE_URL}/api/v1/violations"):
     try:
@@ -320,13 +320,15 @@ def main():
         total_frames = max(0, int(cap.get(cv2.CAP_PROP_FRAME_COUNT)))
         w = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
         h = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
+    FRAME_SKIP = 3
+    effective_fps = max(1, int(fps / FRAME_SKIP))
     output_video_path = os.path.join(PROJECT_ROOT, "outputs", "results", f"{args.job_id}.mp4") if args.job_id else os.path.join(PROJECT_ROOT, "outputs", "results", "annotated_output_functional.mp4")
     writer = None
     if not is_live_stream:
-        # Fallback to mp4v codec for better cross-platform compatibility (especially Windows without openh264)
-        writer = cv2.VideoWriter(output_video_path, cv2.VideoWriter_fourcc(*"mp4v"), fps, (w, h))
+        # Using avc1 (H.264) so that the output video plays natively in web browsers
+        writer = cv2.VideoWriter(output_video_path, cv2.VideoWriter_fourcc(*"avc1"), effective_fps, (w, h))
 
-    validator = TemporalValidator(fps=fps)
+    validator = TemporalValidator(fps=effective_fps)
     log_rows = []
     
     evidence_dir_rel = os.path.join("outputs", "evidence", args.job_id) if args.job_id else os.path.join("outputs", "evidence")
@@ -375,9 +377,12 @@ def main():
                 break
         metrics["frames"] += 1
 
+        if metrics["frames"] % FRAME_SKIP != 0:
+            continue
+
         # Person Detection & Tracking
         p_result = person_model.track(frame, persist=True, classes=[PERSON_CLASS_ID],
-                                      tracker=TRACKER_CONFIG, conf=CONF_THRESHOLD, verbose=False, imgsz=IMGSZ, half=True)[0]
+                                      tracker=TRACKER_CONFIG, conf=CONF_THRESHOLD, verbose=False, imgsz=IMGSZ, half=(device == 'cuda'))[0]
         
         person_boxes = p_result.boxes.xyxy.cpu().numpy().tolist() if p_result.boxes.id is not None else []
         person_ids = p_result.boxes.id.int().cpu().tolist() if p_result.boxes.id is not None else []
@@ -389,7 +394,7 @@ def main():
         metrics["unique_track_ids"].update(person_ids)
 
         # PPE Detection
-        ppe_result = ppe_model(frame, conf=CONF_THRESHOLD, verbose=False, imgsz=IMGSZ, half=True)[0]
+        ppe_result = ppe_model(frame, conf=CONF_THRESHOLD, verbose=False, imgsz=IMGSZ, half=(device == 'cuda'))[0]
         ppe_boxes = ppe_result.boxes.xyxy.cpu().numpy().tolist()
         ppe_classes = [UNIFIED_CLASSES[int(c)] for c in ppe_result.boxes.cls.cpu().numpy()]
         ppe_confs = ppe_result.boxes.conf.cpu().numpy().tolist()
@@ -472,6 +477,8 @@ def main():
             except Exception:
                 pass
         
+
+
         frame_latency_ms = (time.time() - frame_start_time) * 1000
         
         # Post metrics every 30 frames

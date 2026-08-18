@@ -78,6 +78,7 @@ class ViolationEvent(Base):
     feedback_correct = Column(Boolean, nullable=True)
     feedback_helmet = Column(Boolean, nullable=True)
     feedback_vest = Column(Boolean, nullable=True)
+    feedback_boots = Column(Boolean, nullable=True)
     
     camera = relationship("Camera", back_populates="events")
     zone = relationship("Zone", back_populates="events")

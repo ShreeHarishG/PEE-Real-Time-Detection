@@ -626,5 +626,5 @@ def get_stats(db: Session = Depends(database.get_db)):
         "unique_workers": unique_workers,
         "latest_fps": metric.fps if metric else None,
         "latest_latency_ms": metric.latency_ms if metric else None,
-        "model_version": metric.model_version if metric else "V3-HN",
+        "model_version": metric.model_version if metric else "V4-Boots",
     }

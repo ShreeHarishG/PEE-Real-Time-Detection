@@ -83,6 +83,7 @@ class ViolationEventBase(BaseModel):
     feedback_correct: Optional[bool] = None
     feedback_helmet: Optional[bool] = None
     feedback_vest: Optional[bool] = None
+    feedback_boots: Optional[bool] = None
     job_id: Optional[str] = None
     video_timestamp_sec: Optional[float] = None
 
@@ -93,6 +94,7 @@ class ViolationFeedbackUpdate(BaseModel):
     feedback_correct: bool
     feedback_helmet: bool
     feedback_vest: bool
+    feedback_boots: bool
 
 class ViolationEvent(ViolationEventBase):
     id: int
