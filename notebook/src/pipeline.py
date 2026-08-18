@@ -257,10 +257,13 @@ def main():
     
     # Load Models
     try:
-        ppe_model = YOLO(PPE_MODEL_PATH).to('cuda')
-        person_model = YOLO(PERSON_MODEL_PATH).to('cuda')
+        import torch
+        device = 'cuda' if torch.cuda.is_available() else 'cpu'
+        logger.info(f"Loading models on device: {device.upper()}")
+        ppe_model = YOLO(PPE_MODEL_PATH).to(device)
+        person_model = YOLO(PERSON_MODEL_PATH).to(device)
     except Exception as e:
-        logger.error(f"Failed to load models. Ensure CUDA is available: {e}")
+        logger.error(f"Failed to load models. Ensure dependencies are installed: {e}")
         sys.exit(1)
 
     live_log_handler = configure_live_job_logging(args.job_id) if is_live_stream else None
@@ -320,7 +323,8 @@ def main():
     output_video_path = os.path.join(PROJECT_ROOT, "outputs", "results", f"{args.job_id}.mp4") if args.job_id else os.path.join(PROJECT_ROOT, "outputs", "results", "annotated_output_functional.mp4")
     writer = None
     if not is_live_stream:
-        writer = cv2.VideoWriter(output_video_path, cv2.VideoWriter_fourcc(*"avc1"), fps, (w, h))
+        # Fallback to mp4v codec for better cross-platform compatibility (especially Windows without openh264)
+        writer = cv2.VideoWriter(output_video_path, cv2.VideoWriter_fourcc(*"mp4v"), fps, (w, h))
 
     validator = TemporalValidator(fps=fps)
     log_rows = []

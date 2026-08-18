@@ -1,20 +1,16 @@
 v2:
-  path: ../02_MODELS/rollback/ppe_v2_backup.pt
+  path: models/ppe_v2_backup.pt
   version: V2
 
 v3-hn:
-  path: ../02_MODELS/production/ppe_v3_hn_best.pt
+  path: models/ppe_v3_hn_best.pt
   version: V3-HN
   imgsz: 512
 
-v3_boots:
-  path: ../02_MODELS/experimental/ppe_v3_boots_best.pt
-  experimental: true
-  classes:
-    - helmet
-    - no_helmet
-    - vest
-    - boots
+v4-boots:
+  path: models/ppe_v4_boots.pt
+  version: V4-Boots
+  imgsz: 512
 
 production:
-  version: V3-HN
+  version: V4-Boots
