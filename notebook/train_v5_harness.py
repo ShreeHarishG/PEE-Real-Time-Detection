@@ -4,7 +4,7 @@ import os
 def main():
     # Load the best V4 model (so it remembers helmet, vest, and boots)
     print("Loading V4-Boots base model...")
-    model_path = r"runs\detect\ppe_v4_boots\weights\best.pt"
+    model_path = r"runs\detect\runs\detect\ppe_v4_boots\weights\best.pt"
     if not os.path.exists(model_path):
         print(f"Warning: {model_path} not found. Falling back to yolov8n.pt")
         model = YOLO("yolov8n.pt")
@@ -24,7 +24,7 @@ def main():
         project="runs/detect",
         name="ppe_v5_harness",
         save=True,
-        device="cpu",           
+        device=0,           
         patience=20             
     )
     

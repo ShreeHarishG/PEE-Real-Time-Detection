@@ -12,5 +12,10 @@ v4-boots:
   version: V4-Boots
   imgsz: 512
 
+v5-harness:
+  path: models/ppe_v5_harness.pt
+  version: V5-Harness
+  imgsz: 512
+
 production:
-  version: V4-Boots
+  version: V5-Harness

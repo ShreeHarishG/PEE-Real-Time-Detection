@@ -1,0 +1,14 @@
+Install system video libraries:
+bash
+sudo apt-get update
+sudo apt-get install ffmpeg libsm6 libxext6 -y
+Install Node modules:
+bash
+cd notebook/frontend
+npm install
+Setup Python Environment:
+bash
+python3 -m venv ppe-env
+source ppe-env/bin/activate
+pip install -r requirements.txt
+# (And install the Linux-specific PyTorch wheels if using a GPU server)
