@@ -25,12 +25,16 @@ def main():
 
     # 2. Start Database (Handles newer 'docker compose' and older 'docker-compose')
     print("-> Starting PostgreSQL (Docker)...")
+    docker_cmd = ["docker", "compose"] if is_windows() else ["sudo", "docker", "compose"]
+    docker_fallback = ["docker-compose"] if is_windows() else ["sudo", "docker-compose"]
     try:
-        subprocess.run(["docker", "compose", "up", "-d", "db"], cwd=notebook_dir)
+        subprocess.run(docker_cmd + ["up", "-d", "db"], cwd=notebook_dir)
     except FileNotFoundError:
-        subprocess.run(["docker-compose", "up", "-d", "db"], cwd=notebook_dir)
+        subprocess.run(docker_fallback + ["up", "-d", "db"], cwd=notebook_dir)
 
     # 3. Initialize DB Tables
+    print("-> Waiting for database to boot up (10 seconds)...")
+    time.sleep(10)
     print("-> Initializing Database...")
     subprocess.run([python_exe, "init_db.py"], cwd=os.path.join(notebook_dir, "backend", "scripts"))
 

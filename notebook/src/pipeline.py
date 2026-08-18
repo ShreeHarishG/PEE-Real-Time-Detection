@@ -8,8 +8,39 @@ import time
 import uuid
 import logging
 from logging.handlers import RotatingFileHandler
+from contextlib import asynccontextmanager
 from collections import defaultdict, deque
 from typing import List, Dict, Tuple, Set, Optional
+
+def get_ffmpeg_binary():
+    import urllib.request, tarfile, shutil
+    
+    sys_ffmpeg = shutil.which("ffmpeg")
+    if sys_ffmpeg:
+        return sys_ffmpeg
+        
+    ffmpeg_path = os.path.join(os.path.dirname(__file__), "..", "ffmpeg_bin")
+    if os.path.exists(ffmpeg_path):
+        return ffmpeg_path
+    logger.info("Downloading static FFmpeg binary (this happens only once)...")
+    url = "https://johnvansickle.com/ffmpeg/releases/ffmpeg-release-amd64-static.tar.xz"
+    tar_path = os.path.join(os.path.dirname(__file__), "..", "ffmpeg.tar.xz")
+    try:
+        urllib.request.urlretrieve(url, tar_path)
+        with tarfile.open(tar_path, "r:xz") as tar:
+            tar.extractall(path=os.path.dirname(__file__) + "/..")
+        for root, dirs, files in os.walk(os.path.dirname(__file__) + "/.."):
+            if "ffmpeg" in files and "ffmpeg-release" in root:
+                shutil.move(os.path.join(root, "ffmpeg"), ffmpeg_path)
+                break
+        os.chmod(ffmpeg_path, 0o755)
+    except Exception as e:
+        logger.error(f"Failed to download/extract FFmpeg: {e}")
+        return None
+    finally:
+        if os.path.exists(tar_path):
+            os.remove(tar_path)
+    return ffmpeg_path
 
 import cv2
 import numpy as np
@@ -257,10 +288,13 @@ def main():
     
     # Load Models
     try:
-        ppe_model = YOLO(PPE_MODEL_PATH).to('cuda')
-        person_model = YOLO(PERSON_MODEL_PATH).to('cuda')
+        import torch
+        device = 'cuda' if torch.cuda.is_available() else 'cpu'
+        logger.info(f"Loading models on device: {device}")
+        ppe_model = YOLO(PPE_MODEL_PATH).to(device)
+        person_model = YOLO(PERSON_MODEL_PATH).to(device)
     except Exception as e:
-        logger.error(f"Failed to load models. Ensure CUDA is available: {e}")
+        logger.error(f"Failed to load models: {e}")
         sys.exit(1)
 
     live_log_handler = configure_live_job_logging(args.job_id) if is_live_stream else None
@@ -318,9 +352,10 @@ def main():
         w = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
         h = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
     output_video_path = os.path.join(PROJECT_ROOT, "outputs", "results", f"{args.job_id}.mp4") if args.job_id else os.path.join(PROJECT_ROOT, "outputs", "results", "annotated_output_functional.mp4")
-    writer = None
+    frames_dir = None
     if not is_live_stream:
-        writer = cv2.VideoWriter(output_video_path, cv2.VideoWriter_fourcc(*"avc1"), fps, (w, h))
+        frames_dir = os.path.join(PROJECT_ROOT, "outputs", "temp_frames", args.job_id or "demo")
+        os.makedirs(frames_dir, exist_ok=True)
 
     validator = TemporalValidator(fps=fps)
     log_rows = []
@@ -373,7 +408,7 @@ def main():
 
         # Person Detection & Tracking
         p_result = person_model.track(frame, persist=True, classes=[PERSON_CLASS_ID],
-                                      tracker=TRACKER_CONFIG, conf=CONF_THRESHOLD, verbose=False, imgsz=IMGSZ, half=True)[0]
+                                      tracker=TRACKER_CONFIG, conf=CONF_THRESHOLD, verbose=False, imgsz=IMGSZ)[0]
         
         person_boxes = p_result.boxes.xyxy.cpu().numpy().tolist() if p_result.boxes.id is not None else []
         person_ids = p_result.boxes.id.int().cpu().tolist() if p_result.boxes.id is not None else []
@@ -385,7 +420,7 @@ def main():
         metrics["unique_track_ids"].update(person_ids)
 
         # PPE Detection
-        ppe_result = ppe_model(frame, conf=CONF_THRESHOLD, verbose=False, imgsz=IMGSZ, half=True)[0]
+        ppe_result = ppe_model(frame, conf=CONF_THRESHOLD, verbose=False, imgsz=IMGSZ)[0]
         ppe_boxes = ppe_result.boxes.xyxy.cpu().numpy().tolist()
         ppe_classes = [UNIFIED_CLASSES[int(c)] for c in ppe_result.boxes.cls.cpu().numpy()]
         ppe_confs = ppe_result.boxes.conf.cpu().numpy().tolist()
@@ -455,8 +490,8 @@ def main():
                 import threading
                 threading.Thread(target=post_violation, args=(event_payload,)).start()
 
-        if writer is not None:
-            writer.write(frame)
+        if frames_dir is not None:
+            cv2.imwrite(os.path.join(frames_dir, f"frame_{metrics['frames']:06d}.jpg"), frame)
         
         if args.job_id:
             publish_live_frame(frame, args.job_id)
@@ -503,8 +538,27 @@ def main():
         live_capture.stop()
     elif cap is not None:
         cap.release()
-    if writer is not None:
-        writer.release()
+    if frames_dir is not None:
+        logger.info("Stitching frames into video...")
+        ffmpeg_exe = get_ffmpeg_binary()
+        if ffmpeg_exe:
+            try:
+                import subprocess
+                result = subprocess.run([
+                    ffmpeg_exe, "-y", "-framerate", str(fps),
+                    "-start_number", "1",
+                    "-i", os.path.join(frames_dir, "frame_%06d.jpg"),
+                    "-c:v", "libx264", "-pix_fmt", "yuv420p", output_video_path
+                ], capture_output=True, text=True)
+                
+                if result.returncode == 0:
+                    logger.info(f"Video saved successfully to {output_video_path}")
+                else:
+                    logger.error(f"FFmpeg encoding failed: {result.stderr}")
+            except Exception as e:
+                logger.error(f"FFmpeg execution crashed: {e}")
+        import shutil
+        shutil.rmtree(frames_dir, ignore_errors=True)
         
     if metrics["frames"] == 0 and args.job_id and not is_live_stream:
         logger.error("No frames were read from the video source.")

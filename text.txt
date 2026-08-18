@@ -1,0 +1,266 @@
+RNING ⚠️ 'half' is deprecated and will be removed in the future. Use 'quantize' instead.
+WARNING ⚠️ 'half' is deprecated and will be removed in the future. Use 'quantize' instead.
+WARNING ⚠️ 'half' is deprecated and will be removed in the future. Use 'quantize' instead.
+WARNING ⚠️ 'half' is deprecated and will be removed in the future. Use 'quantize' instead.
+WARNING ⚠️ 'half' is deprecated and will be removed in the future. Use 'quantize' instead.
+WARNING ⚠️ 'half' is deprecated and will be removed in the future. Use 'quantize' instead.
+WARNING ⚠️ 'half' is deprecated and will be removed in the future. Use 'quantize' instead.
+WARNING ⚠️ 'half' is deprecated and will be removed in the future. Use 'quantize' instead.
+WARNING ⚠️ 'half' is deprecated and will be removed in the future. Use 'quantize' instead.
+WARNING ⚠️ 'half' is deprecated and will be removed in the future. Use 'quantize' instead.
+WARNING ⚠️ 'half' is deprecated and will be removed in the future. Use 'quantize' instead.
+WARNING ⚠️ 'half' is deprecated and will be removed in the future. Use 'quantize' instead.
+WARNING ⚠️ 'half' is deprecated and will be removed in the future. Use 'quantize' instead.
+WARNING ⚠️ 'half' is deprecated and will be removed in the future. Use 'quantize' instead.
+WARNING ⚠️ 'half' is deprecated and will be removed in the future. Use 'quantize' instead.
+WARNING ⚠️ 'half' is deprecated and will be removed in the future. Use 'quantize' instead.
+WARNING ⚠️ 'half' is deprecated and will be removed in the future. Use 'quantize' instead.
+WARNING ⚠️ 'half' is deprecated and will be removed in the future. Use 'quantize' instead.
+WARNING ⚠️ 'half' is deprecated and will be removed in the future. Use 'quantize' instead.
+WARNING ⚠️ 'half' is deprecated and will be removed in the future. Use 'quantize' instead.
+WARNING ⚠️ 'half' is deprecated and will be removed in the future. Use 'quantize' instead.
+WARNING ⚠️ 'half' is deprecated and will be removed in the future. Use 'quantize' instead.
+WARNING ⚠️ 'half' is deprecated and will be removed in the future. Use 'quantize' instead.
+WARNING ⚠️ 'half' is deprecated and will be removed in the future. Use 'quantize' instead.
+WARNING ⚠️ 'half' is deprecated and will be removed in the future. Use 'quantize' instead.
+^CTraceback (most recent call last):
+  File "/home/tfrenzy/Harish/Tfrenzy/notebook/src/pipeline.py", line 547, in <module>
+    main()
+  File "/home/tfrenzy/Harish/Tfrenzy/notebook/src/pipeline.py", line 391, in main
+    ppe_result = ppe_model(frame, conf=CONF_THRESHOLD, verbose=False, imgsz=IMGSZ, half=True)[0]
+  File "/home/tfrenzy/Harish/Tfrenzy/ppe-env/lib/python3.10/site-packages/ultralytics/engine/model.py", line 166, in __call__
+    return self.predict(source, stream, **kwargs)
+  File "/home/tfrenzy/Harish/Tfrenzy/ppe-env/lib/python3.10/site-packages/ultralytics/engine/model.py", line 520, in predict
+    return self.predictor.predict_cli(source=source) if is_cli else self.predictor(source=source, stream=stream)
+  File "/home/tfrenzy/Harish/Tfrenzy/ppe-env/lib/python3.10/site-packages/ultralytics/engine/predictor.py", line 241, in __call__
+    return list(self.stream_inference(source, model, *args, **kwargs))  # merge list of Results into one
+  File "/home/tfrenzy/Harish/Tfrenzy/ppe-env/lib/python3.10/site-packages/torch/utils/_contextlib.py", line 40, in generator_context
+    response = gen.send(None)
+  File "/home/tfrenzy/Harish/Tfrenzy/ppe-env/lib/python3.10/site-packages/ultralytics/engine/predictor.py", line 349, in stream_inference
+    preds = self.inference(im, *args, **kwargs)
+  File "/home/tfrenzy/Harish/Tfrenzy/ppe-env/lib/python3.10/site-packages/ultralytics/engine/predictor.py", line 198, in inference
+    return self.model(im, *args, augment=self.args.augment, embed=self.args.embed, **kwargs)
+  File "/home/tfrenzy/Harish/Tfrenzy/ppe-env/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1778, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "/home/tfrenzy/Harish/Tfrenzy/ppe-env/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1789, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/home/tfrenzy/Harish/Tfrenzy/ppe-env/lib/python3.10/site-packages/ultralytics/nn/autobackend.py", line 285, in forward
+    y = self.backend.forward(im, **forward_kwargs)
+  File "/home/tfrenzy/Harish/Tfrenzy/ppe-env/lib/python3.10/site-packages/ultralytics/nn/backends/pytorch.py", line 93, in forward
+    return self.model(im, augment=augment, embed=embed, **kwargs)
+  File "/home/tfrenzy/Harish/Tfrenzy/ppe-env/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1778, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "/home/tfrenzy/Harish/Tfrenzy/ppe-env/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1789, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/home/tfrenzy/Harish/Tfrenzy/ppe-env/lib/python3.10/site-packages/ultralytics/nn/tasks.py", line 157, in forward
+    return self.predict(x, *args, **kwargs)
+  File "/home/tfrenzy/Harish/Tfrenzy/ppe-env/lib/python3.10/site-packages/ultralytics/nn/tasks.py", line 173, in predict
+    return self._predict_once(x, profile, embed)
+  File "/home/tfrenzy/Harish/Tfrenzy/ppe-env/lib/python3.10/site-packages/ultralytics/nn/tasks.py", line 194, in _predict_once
+    x = m(x)  # run
+  File "/home/tfrenzy/Harish/Tfrenzy/ppe-env/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1778, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "/home/tfrenzy/Harish/Tfrenzy/ppe-env/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1789, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/home/tfrenzy/Harish/Tfrenzy/ppe-env/lib/python3.10/site-packages/ultralytics/nn/modules/head.py", line 174, in forward
+    preds = self.forward_head(x, **self.one2many)
+  File "/home/tfrenzy/Harish/Tfrenzy/ppe-env/lib/python3.10/site-packages/ultralytics/nn/modules/head.py", line 166, in forward_head
+    boxes = torch.cat([box_head[i](x[i]).view(bs, 4 * self.reg_max, -1) for i in range(self.nl)], dim=-1)
+  File "/home/tfrenzy/Harish/Tfrenzy/ppe-env/lib/python3.10/site-packages/ultralytics/nn/modules/head.py", line 166, in <listcomp>
+    boxes = torch.cat([box_head[i](x[i]).view(bs, 4 * self.reg_max, -1) for i in range(self.nl)], dim=-1)
+  File "/home/tfrenzy/Harish/Tfrenzy/ppe-env/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1778, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "/home/tfrenzy/Harish/Tfrenzy/ppe-env/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1789, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/home/tfrenzy/Harish/Tfrenzy/ppe-env/lib/python3.10/site-packages/torch/nn/modules/container.py", line 253, in forward
+    input = module(input)
+  File "/home/tfrenzy/Harish/Tfrenzy/ppe-env/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1778, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "/home/tfrenzy/Harish/Tfrenzy/ppe-env/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1789, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/home/tfrenzy/Harish/Tfrenzy/ppe-env/lib/python3.10/site-packages/ultralytics/nn/modules/conv.py", line 89, in forward_fuse
+    return self.act(self.conv(x))
+  File "/home/tfrenzy/Harish/Tfrenzy/ppe-env/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1778, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "/home/tfrenzy/Harish/Tfrenzy/ppe-env/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1789, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/home/tfrenzy/Harish/Tfrenzy/ppe-env/lib/python3.10/site-packages/torch/nn/modules/conv.py", line 565, in forward
+    return self._conv_forward(input, self.weight, self.bias)
+  File "/home/tfrenzy/Harish/Tfrenzy/ppe-env/lib/python3.10/site-packages/torch/nn/modules/conv.py", line 560, in _conv_forward
+    return F.conv2d(
+KeyboardInterrupt
+^[[A
+(ppe-env) tfrenzy@ubuntu:~/Harish/Tfrenzy$ python3 notebook\src\pipeline.py
+python3: can't open file '/home/tfrenzy/Harish/Tfrenzy/notebooksrcpipeline.py': [Errno 2] No such file or directory
+(ppe-env) tfrenzy@ubuntu:~/Harish/Tfrenzy$ python3 notebook/src/pipeline.py
+2026-08-17 21:32:30,861 [INFO] Starting EdgeVision Pipeline (Model: V3-HN)
+/home/tfrenzy/Harish/Tfrenzy/ppe-env/lib/python3.10/site-packages/torch/cuda/__init__.py:188: UserWarning: CUDA initialization: The NVIDIA driver on your system is too old (found version 12060). Please update your GPU driver by downloading and installing a new version from the URL: http://www.nvidia.com/Download/index.aspx Alternatively, go to: https://pytorch.org to install a PyTorch version that has been compiled with your version of the CUDA driver. (Triggered internally at /__w/pytorch/pytorch/c10/cuda/CUDAFunctions.cpp:119.)
+  return torch._C._cuda_getDeviceCount() > 0
+2026-08-17 21:32:30,862 [INFO] Loading models on device: cpu
+2026-08-17 21:32:31,363 [WARNING] Failed to fetch zones from API: HTTPConnectionPool(host='localhost', port=8000): Max retries exceeded with url: /api/v1/zones (Caused by NewConnectionError("HTTPConnection(host='localhost', port=8000): Failed to establish a new connection: [Errno 111] Connection refused")). Falling back to default.
+2026-08-17 21:32:31,363 [INFO] Processing video stream...
+WARNING ⚠️ 'half' is deprecated and will be removed in the future. Use 'quantize' instead.
+WARNING ⚠️ 'half' is deprecated and will be removed in the future. Use 'quantize' instead.
+WARNING ⚠️ 'half' is deprecated and will be removed in the future. Use 'quantize' instead.
+WARNING ⚠️ 'half' is deprecated and will be removed in the future. Use 'quantize' instead.
+WARNING ⚠️ 'half' is deprecated and will be removed in the future. Use 'quantize' instead.
+WARNING ⚠️ 'half' is deprecated and will be removed in the future. Use 'quantize' instead.
+WARNING ⚠️ 'half' is deprecated and will be removed in the future. Use 'quantize' instead.
+WARNING ⚠️ 'half' is deprecated and will be removed in the future. Use 'quantize' instead.
+WARNING ⚠️ 'half' is deprecated and will be removed in the future. Use 'quantize' instead.
+WARNING ⚠️ 'half' is deprecated and will be removed in the future. Use 'quantize' instead.
+WARNING ⚠️ 'half' is deprecated and will be removed in the future. Use 'quantize' instead.
+WARNING ⚠️ 'half' is deprecated and will be removed in the future. Use 'quantize' instead.
+WARNING ⚠️ 'half' is deprecated and will be removed in the future. Use 'quantize' instead.
+WARNING ⚠️ 'half' is deprecated and will be removed in the future. Use 'quantize' instead.
+WARNING ⚠️ 'half' is deprecated and will be removed in the future. Use 'quantize' instead.
+WARNING ⚠️ 'half' is deprecated and will be removed in the future. Use 'quantize' instead.
+WARNING ⚠️ 'half' is deprecated and will be removed in the future. Use 'quantize' instead.
+WARNING ⚠️ 'half' is deprecated and will be removed in the future. Use 'quantize' instead.
+WARNING ⚠️ 'half' is deprecated and will be removed in the future. Use 'quantize' instead.
+WARNING ⚠️ 'half' is deprecated and will be removed in the future. Use 'quantize' instead.
+WARNING ⚠️ 'half' is deprecated and will be removed in the future. Use 'quantize' instead.
+WARNING ⚠️ 'half' is deprecated and will be removed in the future. Use 'quantize' instead.
+WARNING ⚠️ 'half' is deprecated and will be removed in the future. Use 'quantize' instead.
+WARNING ⚠️ 'half' is deprecated and will be removed in the future. Use 'quantize' instead.
+WARNING ⚠️ 'half' is deprecated and will be removed in the future. Use 'quantize' instead.
+WARNING ⚠️ 'half' is deprecated and will be removed in the future. Use 'quantize' instead.
+WARNING ⚠️ 'half' is deprecated and will be removed in the future. Use 'quantize' instead.
+WARNING ⚠️ 'half' is deprecated and will be removed in the future. Use 'quantize' instead.
+WARNING ⚠️ 'half' is deprecated and will be removed in the future. Use 'quantize' instead.
+WARNING ⚠️ 'half' is deprecated and will be removed in the future. Use 'quantize' instead.
+WARNING ⚠️ 'half' is deprecated and will be removed in the future. Use 'quantize' instead.
+WARNING ⚠️ 'half' is deprecated and will be removed in the future. Use 'quantize' instead.
+WARNING ⚠️ 'half' is deprecated and will be removed in the future. Use 'quantize' instead.
+WARNING ⚠️ 'half' is deprecated and will be removed in the future. Use 'quantize' instead.
+WARNING ⚠️ 'half' is deprecated and will be removed in the future. Use 'quantize' instead.
+WARNING ⚠️ 'half' is deprecated and will be removed in the future. Use 'quantize' instead.
+WARNING ⚠️ 'half' is deprecated and will be removed in the future. Use 'quantize' instead.
+WARNING ⚠️ 'half' is deprecated and will be removed in the future. Use 'quantize' instead.
+WARNING ⚠️ 'half' is deprecated and will be removed in the future. Use 'quantize' instead.
+WARNING ⚠️ 'half' is deprecated and will be removed in the future. Use 'quantize' instead.
+WARNING ⚠️ 'half' is deprecated and will be removed in the future. Use 'quantize' instead.
+WARNING ⚠️ 'half' is deprecated and will be removed in the future. Use 'quantize' instead.
+WARNING ⚠️ 'half' is deprecated and will be removed in the future. Use 'quantize' instead.
+WARNING ⚠️ 'half' is deprecated and will be removed in the future. Use 'quantize' instead.
+WARNING ⚠️ 'half' is deprecated and will be removed in the future. Use 'quantize' instead.
+WARNING ⚠️ 'half' is deprecated and will be removed in the future. Use 'quantize' instead.
+WARNING ⚠️ 'half' is deprecated and will be removed in the future. Use 'quantize' instead.
+WARNING ⚠️ 'half' is deprecated and will be removed in the future. Use 'quantize' instead.
+WARNING ⚠️ 'half' is deprecated and will be removed in the future. Use 'quantize' instead.
+WARNING ⚠️ 'half' is deprecated and will be removed in the future. Use 'quantize' instead.
+WARNING ⚠️ 'half' is deprecated and will be removed in the future. Use 'quantize' instead.
+WARNING ⚠️ 'half' is deprecated and will be removed in the future. Use 'quantize' instead.
+WARNING ⚠️ 'half' is deprecated and will be removed in the future. Use 'quantize' instead.
+WARNING ⚠️ 'half' is deprecated and will be removed in the future. Use 'quantize' instead.
+WARNING ⚠️ 'half' is deprecated and will be removed in the future. Use 'quantize' instead.
+WARNING ⚠️ 'half' is deprecated and will be removed in the future. Use 'quantize' instead.
+WARNING ⚠️ 'half' is deprecated and will be removed in the future. Use 'quantize' instead.
+WARNING ⚠️ 'half' is deprecated and will be removed in the future. Use 'quantize' instead.
+WARNING ⚠️ 'half' is deprecated and will be removed in the future. Use 'quantize' instead.
+WARNING ⚠️ 'half' is deprecated and will be removed in the future. Use 'quantize' instead.
+WARNING ⚠️ 'half' is deprecated and will be removed in the future. Use 'quantize' instead.
+WARNING ⚠️ 'half' is deprecated and will be removed in the future. Use 'quantize' instead.
+WARNING ⚠️ 'half' is deprecated and will be removed in the future. Use 'quantize' instead.
+WARNING ⚠️ 'half' is deprecated and will be removed in the future. Use 'quantize' instead.
+WARNING ⚠️ 'half' is deprecated and will be removed in the future. Use 'quantize' instead.
+WARNING ⚠️ 'half' is deprecated and will be removed in the future. Use 'quantize' instead.
+WARNING ⚠️ 'half' is deprecated and will be removed in the future. Use 'quantize' instead.
+WARNING ⚠️ 'half' is deprecated and will be removed in the future. Use 'quantize' instead.
+WARNING ⚠️ 'half' is deprecated and will be removed in the future. Use 'quantize' instead.
+WARNING ⚠️ 'half' is deprecated and will be removed in the future. Use 'quantize' instead.
+WARNING ⚠️ 'half' is deprecated and will be removed in the future. Use 'quantize' instead.
+WARNING ⚠️ 'half' is deprecated and will be removed in the future. Use 'quantize' instead.
+WARNING ⚠️ 'half' is deprecated and will be removed in the future. Use 'quantize' instead.
+WARNING ⚠️ 'half' is deprecated and will be removed in the future. Use 'quantize' instead.
+WARNING ⚠️ 'half' is deprecated and will be removed in the future. Use 'quantize' instead.
+WARNING ⚠️ 'half' is deprecated and will be removed in the future. Use 'quantize' instead.
+WARNING ⚠️ 'half' is deprecated and will be removed in the future. Use 'quantize' instead.
+WARNING ⚠️ 'half' is deprecated and will be removed in the future. Use 'quantize' instead.
+WARNING ⚠️ 'half' is deprecated and will be removed in the future. Use 'quantize' instead.
+WARNING ⚠️ 'half' is deprecated and will be removed in the future. Use 'quantize' instead.
+WARNING ⚠️ 'half' is deprecated and will be removed in the future. Use 'quantize' instead.
+WARNING ⚠️ 'half' is deprecated and will be removed in the future. Use 'quantize' instead.
+WARNING ⚠️ 'half' is deprecated and will be removed in the future. Use 'quantize' instead.
+WARNING ⚠️ 'half' is deprecated and will be removed in the future. Use 'quantize' instead.
+WARNING ⚠️ 'half' is deprecated and will be removed in the future. Use 'quantize' instead.
+WARNING ⚠️ 'half' is deprecated and will be removed in the future. Use 'quantize' instead.
+WARNING ⚠️ 'half' is deprecated and will be removed in the future. Use 'quantize' instead.
+WARNING ⚠️ 'half' is deprecated and will be removed in the future. Use 'quantize' instead.
+WARNING ⚠️ 'half' is deprecated and will be removed in the future. Use 'quantize' instead.
+WARNING ⚠️ 'half' is deprecated and will be removed in the future. Use 'quantize' instead.
+WARNING ⚠️ 'half' is deprecated and will be removed in the future. Use 'quantize' instead.
+WARNING ⚠️ 'half' is deprecated and will be removed in the future. Use 'quantize' instead.
+WARNING ⚠️ 'half' is deprecated and will be removed in the future. Use 'quantize' instead.
+WARNING ⚠️ 'half' is deprecated and will be removed in the future. Use 'quantize' instead.
+WARNING ⚠️ 'half' is deprecated and will be removed in the future. Use 'quantize' instead.
+WARNING ⚠️ 'half' is deprecated and will be removed in the future. Use 'quantize' instead.
+WARNING ⚠️ 'half' is deprecated and will be removed in the future. Use 'quantize' instead.
+WARNING ⚠️ 'half' is deprecated and will be removed in the future. Use 'quantize' instead.
+WARNING ⚠️ 'half' is deprecated and will be removed in the future. Use 'quantize' instead.
+^CTraceback (most recent call last):
+  File "/home/tfrenzy/Harish/Tfrenzy/notebook/src/pipeline.py", line 547, in <module>
+    main()
+  File "/home/tfrenzy/Harish/Tfrenzy/notebook/src/pipeline.py", line 378, in main
+    p_result = person_model.track(frame, persist=True, classes=[PERSON_CLASS_ID],
+  File "/home/tfrenzy/Harish/Tfrenzy/ppe-env/lib/python3.10/site-packages/ultralytics/engine/model.py", line 562, in track
+    return self.predict(source=source, stream=stream, **kwargs)
+  File "/home/tfrenzy/Harish/Tfrenzy/ppe-env/lib/python3.10/site-packages/ultralytics/engine/model.py", line 520, in predict
+    return self.predictor.predict_cli(source=source) if is_cli else self.predictor(source=source, stream=stream)
+  File "/home/tfrenzy/Harish/Tfrenzy/ppe-env/lib/python3.10/site-packages/ultralytics/engine/predictor.py", line 241, in __call__
+    return list(self.stream_inference(source, model, *args, **kwargs))  # merge list of Results into one
+  File "/home/tfrenzy/Harish/Tfrenzy/ppe-env/lib/python3.10/site-packages/torch/utils/_contextlib.py", line 40, in generator_context
+    response = gen.send(None)
+  File "/home/tfrenzy/Harish/Tfrenzy/ppe-env/lib/python3.10/site-packages/ultralytics/engine/predictor.py", line 349, in stream_inference
+    preds = self.inference(im, *args, **kwargs)
+  File "/home/tfrenzy/Harish/Tfrenzy/ppe-env/lib/python3.10/site-packages/ultralytics/engine/predictor.py", line 198, in inference
+    return self.model(im, *args, augment=self.args.augment, embed=self.args.embed, **kwargs)
+  File "/home/tfrenzy/Harish/Tfrenzy/ppe-env/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1778, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "/home/tfrenzy/Harish/Tfrenzy/ppe-env/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1789, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/home/tfrenzy/Harish/Tfrenzy/ppe-env/lib/python3.10/site-packages/ultralytics/nn/autobackend.py", line 285, in forward
+    y = self.backend.forward(im, **forward_kwargs)
+  File "/home/tfrenzy/Harish/Tfrenzy/ppe-env/lib/python3.10/site-packages/ultralytics/nn/backends/pytorch.py", line 93, in forward
+    return self.model(im, augment=augment, embed=embed, **kwargs)
+  File "/home/tfrenzy/Harish/Tfrenzy/ppe-env/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1778, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "/home/tfrenzy/Harish/Tfrenzy/ppe-env/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1789, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/home/tfrenzy/Harish/Tfrenzy/ppe-env/lib/python3.10/site-packages/ultralytics/nn/tasks.py", line 157, in forward
+    return self.predict(x, *args, **kwargs)
+  File "/home/tfrenzy/Harish/Tfrenzy/ppe-env/lib/python3.10/site-packages/ultralytics/nn/tasks.py", line 173, in predict
+    return self._predict_once(x, profile, embed)
+  File "/home/tfrenzy/Harish/Tfrenzy/ppe-env/lib/python3.10/site-packages/ultralytics/nn/tasks.py", line 194, in _predict_once
+    x = m(x)  # run
+  File "/home/tfrenzy/Harish/Tfrenzy/ppe-env/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1778, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "/home/tfrenzy/Harish/Tfrenzy/ppe-env/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1789, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/home/tfrenzy/Harish/Tfrenzy/ppe-env/lib/python3.10/site-packages/ultralytics/nn/modules/head.py", line 174, in forward
+    preds = self.forward_head(x, **self.one2many)
+  File "/home/tfrenzy/Harish/Tfrenzy/ppe-env/lib/python3.10/site-packages/ultralytics/nn/modules/head.py", line 166, in forward_head
+    boxes = torch.cat([box_head[i](x[i]).view(bs, 4 * self.reg_max, -1) for i in range(self.nl)], dim=-1)
+  File "/home/tfrenzy/Harish/Tfrenzy/ppe-env/lib/python3.10/site-packages/ultralytics/nn/modules/head.py", line 166, in <listcomp>
+    boxes = torch.cat([box_head[i](x[i]).view(bs, 4 * self.reg_max, -1) for i in range(self.nl)], dim=-1)
+  File "/home/tfrenzy/Harish/Tfrenzy/ppe-env/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1778, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "/home/tfrenzy/Harish/Tfrenzy/ppe-env/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1789, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/home/tfrenzy/Harish/Tfrenzy/ppe-env/lib/python3.10/site-packages/torch/nn/modules/container.py", line 253, in forward
+    input = module(input)
+  File "/home/tfrenzy/Harish/Tfrenzy/ppe-env/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1778, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "/home/tfrenzy/Harish/Tfrenzy/ppe-env/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1789, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/home/tfrenzy/Harish/Tfrenzy/ppe-env/lib/python3.10/site-packages/ultralytics/nn/modules/conv.py", line 89, in forward_fuse
+    return self.act(self.conv(x))
+  File "/home/tfrenzy/Harish/Tfrenzy/ppe-env/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1778, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "/home/tfrenzy/Harish/Tfrenzy/ppe-env/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1789, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/home/tfrenzy/Harish/Tfrenzy/ppe-env/lib/python3.10/site-packages/torch/nn/modules/conv.py", line 565, in forward
+    return self._conv_forward(input, self.weight, self.bias)
+  File "/home/tfrenzy/Harish/Tfrenzy/ppe-env/lib/python3.10/site-packages/torch/nn/modules/conv.py", line 560, in _conv_forward
+    return F.conv2d(
+KeyboardInterrupt
