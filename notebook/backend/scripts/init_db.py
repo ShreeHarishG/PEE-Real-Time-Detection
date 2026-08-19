@@ -22,17 +22,17 @@ def seed_data():
             zones = [
                 models.Zone(
                     name="Construction Zone", type="construction",
-                    required_ppe=["helmet", "vest"],
+                    required_ppe=["helmet", "vest", "boots", "harness"],
                     confidence_threshold=0.25, min_seconds_in_zone=2.0, is_active=True
                 ),
                 models.Zone(
                     name="Work at Height", type="height",
-                    required_ppe=["helmet", "vest", "harness", "hook"],
+                    required_ppe=["helmet", "vest", "boots", "harness", "hook"],
                     confidence_threshold=0.25, min_seconds_in_zone=3.0, is_active=True
                 ),
                 models.Zone(
                     name="General Plant", type="general",
-                    required_ppe=["helmet", "vest"],
+                    required_ppe=["helmet", "vest", "boots", "harness"],
                     confidence_threshold=0.25, min_seconds_in_zone=2.0, is_active=True
                 ),
             ]

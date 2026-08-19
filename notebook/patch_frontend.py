@@ -32,7 +32,7 @@ def patch_frontend(file_path):
         )
         # For live/page.tsx (dark mode styling)
         content = content.replace(
-            '<label className="flex items-center gap-3 opacity-50 cursor-not-allowed">\n                        <input type="checkbox" disabled className="rounded border-slate-700 bg-slate-800" />\n                        <span className="text-sm text-slate-500">Harness Required <span className="text-xs text-red-500 ml-1">(UNSUPPORTED)</span></span>\n                      </label>',
+            '<label className="flex items-center gap-3 opacity-50 cursor-not-allowed">\n                        <input type="checkbox" disabled className="rounded border-slate-700 bg-slate-800" />\n                        <span className="text-sm text-slate-400">Harness Required <span className="text-xs text-red-400 ml-1">(UNSUPPORTED)</span></span>\n                      </label>',
             '<label className="flex items-center gap-3 cursor-pointer">\n                        <input type="checkbox" checked={zoneConfig.required.includes(\'harness\')} onChange={() => togglePPE(\'harness\')} className="rounded border-slate-700 bg-slate-800 accent-emerald-500" />\n                        <span className="text-sm text-slate-200">Harness Required</span>\n                      </label>'
         )
 
