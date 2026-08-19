@@ -17,5 +17,10 @@ v5-harness:
   version: V5-Harness
   imgsz: 512
 
+v6-hitl:
+  path: models/ppe_v6_hitl.pt
+  version: V6-HITL
+  imgsz: 640
+
 production:
-  version: V5-Harness
+  version: V6-HITL

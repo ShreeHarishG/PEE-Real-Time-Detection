@@ -74,27 +74,66 @@ def _live_frame_path(job_id: Optional[str]) -> str:
 async def generate_frames(request: Request, job_id: Optional[str]):
     frame_path = _live_frame_path(job_id)
     last_mtime = 0
-    while True:
-        try:
+    queue = asyncio.Queue(maxsize=150)
+    
+    async def frame_reader():
+        nonlocal last_mtime
+        while True:
+            if await request.is_disconnected():
+                break
+            try:
+                if os.path.exists(frame_path):
+                    mtime = os.path.getmtime(frame_path)
+                    if mtime > last_mtime:
+                        with open(frame_path, "rb") as f:
+                            frame = f.read()
+                        if frame:
+                            try:
+                                queue.put_nowait(frame)
+                            except asyncio.QueueFull:
+                                try:
+                                    queue.get_nowait()
+                                    queue.put_nowait(frame)
+                                except Exception:
+                                    pass
+                        last_mtime = mtime
+            except Exception as exc:
+                logger.debug("[STREAM] reader error: %s", exc)
+            # Poll at high frequency (15ms) to catch as many frames as possible
+            await asyncio.sleep(0.015)
+            
+    reader_task = asyncio.create_task(frame_reader())
+    
+    # Pre-buffer for 1.5 seconds to build a healthy cushion and prevent stuttering
+    await asyncio.sleep(1.5)
+
+    try:
+        while True:
             if await request.is_disconnected():
                 logger.info("[STREAM] client disconnected job_id=%s", job_id)
                 return
-            if os.path.exists(frame_path):
-                mtime = os.path.getmtime(frame_path)
-                if mtime > last_mtime:
-                    with open(frame_path, "rb") as f:
-                        frame = f.read()
-                    if not frame:
-                        raise ValueError("empty JPEG frame")
-                    last_mtime = mtime
-                    yield (b'--frame\r\n'
-                           b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n')
-            await asyncio.sleep(0.03)
-        except asyncio.CancelledError:
-            return
-        except (FileNotFoundError, PermissionError, OSError, ValueError) as exc:
-            logger.debug("[STREAM] job_id=%s waiting for frame: %s", job_id, exc)
-            await asyncio.sleep(0.03)
+                
+            try:
+                frame = queue.get_nowait()
+                yield (b'--frame\r\n'
+                       b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n')
+                
+                # Dynamic playback framerate to keep the stream perfectly smooth
+                qsize = queue.qsize()
+                if qsize > 90:
+                    await asyncio.sleep(0.02)   # Fast catch-up (50 FPS)
+                elif qsize > 45:
+                    await asyncio.sleep(0.033)  # Normal (~30 FPS)
+                elif qsize > 15:
+                    await asyncio.sleep(0.04)   # Slightly slower to preserve buffer (25 FPS)
+                else:
+                    await asyncio.sleep(0.05)   # Slower to prevent empty buffer pause (20 FPS)
+            except asyncio.QueueEmpty:
+                await asyncio.sleep(0.05)
+    except asyncio.CancelledError:
+        return
+    finally:
+        reader_task.cancel()
 
 @app.get("/api/v1/stream")
 async def video_stream(request: Request, jobId: Optional[str] = Query(None)):
