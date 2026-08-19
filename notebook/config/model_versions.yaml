@@ -23,4 +23,4 @@ v6-hitl:
   imgsz: 640
 
 production:
-  version: V6-HITL
+  version: V5-Harness

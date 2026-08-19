@@ -18,10 +18,17 @@ def main():
     # 1. Resolve Python Environment (Handles both Windows and Linux)
     if is_windows():
         venv_python = os.path.join(root_dir, "ppe-env", "Scripts", "python.exe")
+        venv_python_alt = os.path.join(notebook_dir, ".venv", "Scripts", "python.exe")
     else:
         venv_python = os.path.join(root_dir, "ppe-env", "bin", "python")
+        venv_python_alt = os.path.join(notebook_dir, ".venv", "bin", "python")
         
-    python_exe = venv_python if os.path.exists(venv_python) else sys.executable
+    if os.path.exists(venv_python):
+        python_exe = venv_python
+    elif os.path.exists(venv_python_alt):
+        python_exe = venv_python_alt
+    else:
+        python_exe = sys.executable
 
     # 2. Start Database (Handles newer 'docker compose' and older 'docker-compose')
     print("-> Starting PostgreSQL (Docker)...")
