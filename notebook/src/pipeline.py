@@ -328,7 +328,10 @@ def main():
         # Using avc1 (H.264) so that the output video plays natively in web browsers
         writer = cv2.VideoWriter(output_video_path, cv2.VideoWriter_fourcc(*"avc1"), effective_fps, (w, h))
 
-    validator = TemporalValidator(fps=effective_fps)
+    if is_live_stream:
+        validator = TemporalValidator(window_size=1, violation_threshold=1, min_seconds_in_zone=0.0, fps=effective_fps)
+    else:
+        validator = TemporalValidator(fps=effective_fps)
     log_rows = []
     
     evidence_dir_rel = os.path.join("outputs", "evidence", args.job_id) if args.job_id else os.path.join("outputs", "evidence")
