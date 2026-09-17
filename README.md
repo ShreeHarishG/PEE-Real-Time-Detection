@@ -4,7 +4,7 @@
   # 🛡️ EdgeVision
 
   **Real-time PPE Compliance and Work-at-Height Safety Monitoring**  
-  *Powered by YOLOv8, ByteTrack, and the validated V3-HN model.*
+  *Powered by YOLOv8, ByteTrack, and the validated V5-Harness model.*
 
   [![Python](https://img.shields.io/badge/Python-3.9+-blue.svg?logo=python&logoColor=white)](https://www.python.org/)
   [![Node.js](https://img.shields.io/badge/Node.js-18+-green.svg?logo=node.js&logoColor=white)](https://nodejs.org/)
@@ -20,7 +20,7 @@
 EdgeVision is an end-to-end, real-time safety compliance platform designed for industrial and construction environments. It automatically detects workers, tracks them across zones, and verifies whether they are wearing required Personal Protective Equipment (PPE) such as helmets and vests.
 
 ### ✨ Key Features
-- **Real-Time AI Detection**: Uses highly optimized YOLOv8 and V3-HN models for instance segmentation and classification.
+- **Real-Time AI Detection**: Uses highly optimized YOLOv8 and V5-Harness models for instance segmentation and classification.
 - **Robust Tracking**: Integrates ByteTrack for consistent temporal association and trajectory monitoring.
 - **Dynamic Rule Engine**: Define custom spatial zones and apply specific PPE rules to each area.
 - **Modern Dashboard**: A sleek Next.js React frontend for live monitoring, statistics, and configuration.
@@ -48,11 +48,12 @@ The EdgeVision pipeline is designed for low-latency, high-throughput processing.
 graph LR
     A[Camera / Video] -->|Frames| B(Person Detection<br>YOLOv8n)
     B --> C(Tracking<br>ByteTrack)
-    C --> D(PPE Detection<br>V3-HN Model)
-    D --> E(Spatial Association<br>& Zone Rules)
+    A -->|Frames| D(PPE Detection<br>V5-Harness Model)
+    C --> E(Spatial Association<br>& Zone Rules)
+    D --> E
     E --> F(Temporal Validator)
-    F -->|Violations & Stats| G[(PostgreSQL)]
-    F -->|API Data| H(FastAPI Backend)
+    F -->|Violations & Stats| H(FastAPI Backend)
+    H -->|Stores Data| G[(PostgreSQL)]
     H <--> I[Next.js Dashboard]
     
     style A fill:#2d3748,stroke:#4a5568,color:#fff
@@ -136,10 +137,10 @@ EdgeVision is built for high-performance edge inference on NVIDIA Jetson devices
 ### Included Models
 | Model | File | Status |
 | :--- | :--- | :--- |
-| **V3-HN** (Production) | `models/ppe_v3_hn_best.pt` | 🟢 **FROZEN** |
-| **V2** (Rollback) | `models/ppe_v2_backup.pt` | 🟡 **AVAILABLE** |
+| **V5-Harness** (Production) | `models/ppe_v5_harness.pt` | 🟢 **ACTIVE** |
+| **V3-HN** (Rollback) | `models/ppe_v3_hn_best.pt` | 🟡 **AVAILABLE** |
 
-### Key Metrics (V3-HN, Warm, RTX 4050)
+### Key Metrics (V5-Harness, Warm, RTX 4050)
 | Metric | Value |
 | :--- | :--- |
 | **mAP50** | `84.20%` |
@@ -151,7 +152,7 @@ EdgeVision is built for high-performance edge inference on NVIDIA Jetson devices
 
 > [!WARNING]  
 > **Known Limitations**
-> - The `boots`, `harness`, `lanyard`, and `hook` classes are **NOT trained** in the V3-HN model (marked as UNTRAINED in the UI).
+> - The `lanyard` and `hook` classes are **NOT trained** in the V5-Harness model (marked as UNTRAINED in the UI).
 > - Jetson TensorRT benchmarking is **PENDING PHYSICAL HARDWARE**.
 
 ---
