@@ -13,15 +13,14 @@ def main():
     args = parser.parse_args()
 
     root_dir = os.path.dirname(os.path.abspath(__file__))
-    notebook_dir = os.path.join(root_dir, "notebook")
     
     # 1. Resolve Python Environment (Handles both Windows and Linux)
     if is_windows():
         venv_python = os.path.join(root_dir, "ppe-env", "Scripts", "python.exe")
-        venv_python_alt = os.path.join(notebook_dir, ".venv", "Scripts", "python.exe")
+        venv_python_alt = os.path.join(root_dir, ".venv", "Scripts", "python.exe")
     else:
         venv_python = os.path.join(root_dir, "ppe-env", "bin", "python")
-        venv_python_alt = os.path.join(notebook_dir, ".venv", "bin", "python")
+        venv_python_alt = os.path.join(root_dir, ".venv", "bin", "python")
         
     if os.path.exists(venv_python):
         python_exe = venv_python
@@ -33,19 +32,19 @@ def main():
     # 2. Start Database (Handles newer 'docker compose' and older 'docker-compose')
     print("-> Starting PostgreSQL (Docker)...")
     try:
-        subprocess.run(["docker", "compose", "up", "-d", "db"], cwd=notebook_dir)
+        subprocess.run(["docker", "compose", "up", "-d", "db"], cwd=root_dir)
     except FileNotFoundError:
-        subprocess.run(["docker-compose", "up", "-d", "db"], cwd=notebook_dir)
+        subprocess.run(["docker-compose", "up", "-d", "db"], cwd=root_dir)
 
     # 3. Initialize DB Tables
     print("-> Initializing Database...")
-    subprocess.run([python_exe, "init_db.py"], cwd=os.path.join(notebook_dir, "backend", "scripts"))
+    subprocess.run([python_exe, "init_db.py"], cwd=os.path.join(root_dir, "backend", "scripts"))
 
     # 4. Start FastAPI
     print("-> Starting FastAPI Backend...")
     backend = subprocess.Popen(
         [python_exe, "-m", "uvicorn", "app.main:app", "--port", "8000", "--reload"],
-        cwd=os.path.join(notebook_dir, "backend")
+        cwd=os.path.join(root_dir, "backend")
     )
     time.sleep(2)
 
@@ -53,7 +52,7 @@ def main():
     print("-> Starting Next.js Frontend...")
     frontend = subprocess.Popen(
         ["npm", "run", "dev"],
-        cwd=os.path.join(notebook_dir, "frontend"),
+        cwd=os.path.join(root_dir, "frontend"),
         shell=is_windows()
     )
 
@@ -64,7 +63,7 @@ def main():
         video_path = args.video if args.video.isdigit() or args.video.startswith("rtsp") else os.path.abspath(args.video)
         pipeline = subprocess.Popen(
             [python_exe, "pipeline.py", "--video", video_path],
-            cwd=os.path.join(notebook_dir, "src")
+            cwd=os.path.join(root_dir, "src")
         )
 
     # Keep script running until Ctrl+C

@@ -1,125 +1,171 @@
-# EdgeVision PPE Compliance Platform
+<div align="center">
+  <img src="assets/edgevision_banner.png" alt="EdgeVision Banner" width="100%" />
 
-Real-time PPE compliance and work-at-height safety monitoring, powered by YOLOv8 and the validated V3-HN model.
+  # 🛡️ EdgeVision
+
+  **Real-time PPE Compliance and Work-at-Height Safety Monitoring**  
+  *Powered by YOLOv8, ByteTrack, and the validated V3-HN model.*
+
+  [![Python](https://img.shields.io/badge/Python-3.9+-blue.svg?logo=python&logoColor=white)](https://www.python.org/)
+  [![Node.js](https://img.shields.io/badge/Node.js-18+-green.svg?logo=node.js&logoColor=white)](https://nodejs.org/)
+  [![FastAPI](https://img.shields.io/badge/FastAPI-Backend-009688.svg?logo=fastapi&logoColor=white)](https://fastapi.tiangolo.com/)
+  [![Next.js](https://img.shields.io/badge/Next.js-Dashboard-000000.svg?logo=next.js&logoColor=white)](https://nextjs.org/)
+  [![YOLOv8](https://img.shields.io/badge/YOLOv8-Computer%20Vision-FF9900.svg?logo=ultralytics&logoColor=white)](https://ultralytics.com/)
+</div>
 
 ---
 
-## Architecture
-```
-Camera / Video → Person Detection (YOLOv8n) → ByteTrack Tracking
-→ V3-HN PPE Detection → Spatial Association
-→ Zone Rule Engine → Temporal Validator
-→ FastAPI Backend → PostgreSQL
-→ Next.js Dashboard
+## 🌟 Overview
+
+EdgeVision is an end-to-end, real-time safety compliance platform designed for industrial and construction environments. It automatically detects workers, tracks them across zones, and verifies whether they are wearing required Personal Protective Equipment (PPE) such as helmets and vests.
+
+### ✨ Key Features
+- **Real-Time AI Detection**: Uses highly optimized YOLOv8 and V3-HN models for instance segmentation and classification.
+- **Robust Tracking**: Integrates ByteTrack for consistent temporal association and trajectory monitoring.
+- **Dynamic Rule Engine**: Define custom spatial zones and apply specific PPE rules to each area.
+- **Modern Dashboard**: A sleek Next.js React frontend for live monitoring, statistics, and configuration.
+- **Edge Deployment Ready**: Designed to run optimally on NVIDIA Jetson edge devices using TensorRT.
+
+---
+
+## 📸 Live Inference Demo
+
+EdgeVision accurately identifies workers and validates required PPE in real-time, highlighting compliance violations instantly:
+
+<div align="center">
+  <img src="assets/demo_screenshot.jpg" alt="Live Camera Inference Screenshot" width="800" />
+</div>
+
+> *Live camera output captured from `outputs/live_camera` and full video pipeline results are generated in `outputs/results`.*
+
+---
+
+## 🏗️ Architecture
+
+The EdgeVision pipeline is designed for low-latency, high-throughput processing.
+
+```mermaid
+graph LR
+    A[Camera / Video] -->|Frames| B(Person Detection<br>YOLOv8n)
+    B --> C(Tracking<br>ByteTrack)
+    C --> D(PPE Detection<br>V3-HN Model)
+    D --> E(Spatial Association<br>& Zone Rules)
+    E --> F(Temporal Validator)
+    F -->|Violations & Stats| G[(PostgreSQL)]
+    F -->|API Data| H(FastAPI Backend)
+    H <--> I[Next.js Dashboard]
+    
+    style A fill:#2d3748,stroke:#4a5568,color:#fff
+    style B fill:#3182ce,stroke:#2b6cb0,color:#fff
+    style C fill:#3182ce,stroke:#2b6cb0,color:#fff
+    style D fill:#805ad5,stroke:#6b46c1,color:#fff
+    style E fill:#dd6b20,stroke:#c05621,color:#fff
+    style F fill:#e53e3e,stroke:#c53030,color:#fff
+    style G fill:#38a169,stroke:#2f855a,color:#fff
+    style H fill:#009688,stroke:#00796b,color:#fff
+    style I fill:#000000,stroke:#333333,color:#fff
 ```
 
 ---
 
-## Quick Start (Windows — Development)
+## 🚀 Quick Start (Windows — Development)
 
 ### Prerequisites
-- Python 3.9+, Node.js 18+, Docker Desktop
+- Python 3.9+
+- Node.js 18+
+- Docker Desktop
 
-### 1. Start the Database
+### 1️⃣ Start the Database
 ```bash
-cd notebook
 docker-compose up -d db
 ```
 
-### 2. Install Backend Dependencies & Initialise DB (first run only)
+### 2️⃣ Initialize Backend
+*(First run only)*
 ```bash
 cd backend
 pip install fastapi uvicorn sqlalchemy psycopg2-binary pydantic-settings
 python scripts/init_db.py
 ```
 
-### 3. Start FastAPI Backend
+### 3️⃣ Start FastAPI Backend
 ```bash
-# In notebook/backend/
+# In backend/
 python -m uvicorn app.main:app --port 8000
 ```
-Verify: http://localhost:8000/api/v1/health  
-API docs: http://localhost:8000/docs
+- **Health Check**: [http://localhost:8000/api/v1/health](http://localhost:8000/api/v1/health)
+- **API Docs**: [http://localhost:8000/docs](http://localhost:8000/docs)
 
-### 4. Start Next.js Frontend
+### 4️⃣ Start Next.js Frontend
 ```bash
-# In notebook/frontend/
+# In frontend/
 npm install
 npm run dev
 ```
-Dashboard: http://localhost:3000
+- **Dashboard**: [http://localhost:3000](http://localhost:3000)
 
-### 5. Run the ML Demo Pipeline
+### 5️⃣ Run the ML Demo Pipeline
 ```bash
-# In notebook/ root
+# In the root directory
 python src/pipeline.py
 ```
 
 ---
 
-## Quick Start (Linux / Ubuntu / Jetson)
+## 🐧 Edge Deployment (Linux / Jetson)
 
-To deploy the fully automated pipeline on an NVIDIA Jetson device (JetPack 5.x/6.x):
+EdgeVision is built for high-performance edge inference on NVIDIA Jetson devices (JetPack 5.x/6.x).
 
-1. **Transfer Files**: Copy the entire project folder to your Jetson device.
-2. **Install Dependencies**: Open a terminal on the Jetson and navigate to the deployment folder:
+1. **Transfer Files**: Copy the project to your Jetson device.
+2. **Install Dependencies**:
    ```bash
-   cd notebook/deployment
+   cd deployment
    sudo bash install_jetson.sh
    ```
-   *This script automatically installs DeepStream, PyTorch, creates necessary directories, and installs the `edgevision` systemd service.*
-3. **Start the Service**: 
-   The pipeline will now run automatically on boot. To start it immediately:
+3. **Start the Service**:
    ```bash
    sudo systemctl start edgevision
    ```
-4. **Compile TensorRT Engine**: To achieve maximum FPS, you must compile the ONNX model into a TensorRT engine on the Jetson itself. Follow the step-by-step instructions in:
-   [`notebook/deployment/tensorrt_instructions.md`](notebook/deployment/tensorrt_instructions.md)
-5. **View Dashboard**: Access the live stream and statistics from any device on the network by pointing a browser to `http://<JETSON_IP>:3000`.
+4. **Compile TensorRT Engine**: For maximum FPS, compile the ONNX model to a TensorRT engine. Instructions are in `10_DOCUMENTATION/USER_GUIDE.md` or the deployment docs.
+5. **View Dashboard**: Navigate to `http://<JETSON_IP>:3000` from any device on the network.
 
 ---
 
-## Models
+## 📊 Models & Performance
 
+### Included Models
 | Model | File | Status |
 | :--- | :--- | :--- |
-| V3-HN (Production) | `models/ppe_v3_hn_best.pt` | FROZEN |
-| V2 (Rollback) | `models/ppe_v2_backup.pt` | AVAILABLE |
+| **V3-HN** (Production) | `models/ppe_v3_hn_best.pt` | 🟢 **FROZEN** |
+| **V2** (Rollback) | `models/ppe_v2_backup.pt` | 🟡 **AVAILABLE** |
 
----
-
-## Key Metrics (V3-HN, Warm, RTX 4050)
-
+### Key Metrics (V3-HN, Warm, RTX 4050)
 | Metric | Value |
 | :--- | :--- |
-| mAP50 | 84.20% |
-| Helmet Recall | 82.33% |
-| Vest Recall | 73.76% |
-| Real-World FP | 0 / 0 |
-| Warm FPS | 16.2 |
-| P95 Latency | 134.63 ms |
+| **mAP50** | `84.20%` |
+| **Helmet Recall** | `82.33%` |
+| **Vest Recall** | `73.76%` |
+| **Real-World FP** | `0 / 0` |
+| **Warm FPS** | `16.2` |
+| **P95 Latency** | `134.63 ms` |
+
+> [!WARNING]  
+> **Known Limitations**
+> - The `boots`, `harness`, `lanyard`, and `hook` classes are **NOT trained** in the V3-HN model (marked as UNTRAINED in the UI).
+> - Jetson TensorRT benchmarking is **PENDING PHYSICAL HARDWARE**.
 
 ---
 
-## Known Limitations
-- `boots`, `harness`, `lanyard`, `hook` are **NOT trained** in V3-HN — clearly marked in UI as UNTRAINED.
-- Jetson TensorRT benchmarking **PENDING PHYSICAL HARDWARE**.
+## 📚 Documentation Reference
+
+For more detailed technical documentation, please refer to the files in the `docs` folder:
+
+- 📖 **[Handover Document](docs/HANDOVER.md)** — Read first for project handovers.
+- ⚙️ **[Setup Guide](docs/SETUP.md)** — Detailed environment setup.
+- 🧑‍💻 **[User Guide](docs/USER_GUIDE.md)** — How to operate the platform.
+- 📄 **[PRD Specification](docs/PRD.pdf)** — Product requirements and architectural constraints.
 
 ---
-
-## Documentation
-
-| Document | Path |
-| :--- | :--- |
-| Handover (read first) | `docs/HANDOVER_TO_TFRENZY.md` |
-| Setup Guide | `docs/SETUP.md` |
-| Architecture | `docs/ARCHITECTURE.md` |
-| API Reference | `docs/API.md` |
-| Model Details | `docs/MODEL.md` |
-| Jetson Deployment | `docs/JETSON_DEPLOYMENT.md` |
-| Demo Procedure | `docs/DEMO_GUIDE.md` |
-| User Guide | `docs/USER_GUIDE.md` |
-| Training | `docs/TRAINING.md` |
-| Database | `docs/DATABASE.md` |
-| Testing | `docs/TESTING.md` |
-| Troubleshooting | `docs/TROUBLESHOOTING.md` |
+<div align="center">
+  <sub>Built with ❤️ for workplace safety.</sub>
+</div>

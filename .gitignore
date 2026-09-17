@@ -1,11 +1,62 @@
-# 1. Clear terminal memory just in case
-unset DATABASE_URL
+# Node
+node_modules/
+.next/
+out/
+build/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
 
-# 2. Forcefully overwrite ANY old port in every Python file to 5455
-cd ~/Harish/Tfrenzy2/notebook
-find . -type f -name "*.py" -exec sed -i 's/5434/5455/g' {} +
-find . -type f -name "*.py" -exec sed -i 's/5432/5455/g' {} +
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+.Python
+env/
+venv/
+.venv/
+ENV/
+env.bak/
+venv.bak/
 
-# 3. Start the app!
-cd ~/Harish/Tfrenzy2
-python3 run_app.py
+# Environment Variables
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# ML Models and Weights (Avoid pushing large files to GitHub)
+*.pt
+*.onnx
+*.engine
+*.weights
+
+# IDEs and Editors
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Output and Logs
+logs/
+*.log
+outputs/
+runs/
+
+# Large Datasets and Data Files
+data/
+datasets/
+*.csv
+*.db
+*.sqlite3
+
+# Binaries and Large Media
+*.dll
+*.so
+*.dylib
+*.mp4
+*.webm
+*.avi
+*.mkv
+*.mov
