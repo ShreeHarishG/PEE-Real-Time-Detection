@@ -1,14 +1,12 @@
-Install system video libraries:
-bash
-sudo apt-get update
-sudo apt-get install ffmpeg libsm6 libxext6 -y
-Install Node modules:
-bash
-cd notebook/frontend
-npm install
-Setup Python Environment:
-bash
-python3 -m venv ppe-env
-source ppe-env/bin/activate
-pip install -r requirements.txt
-# (And install the Linux-specific PyTorch wheels if using a GPU server)
+rtsp://admin:admn%40123@192.168.29.251:554/h264
+
+[HMR] connected
+react-dom-client.development.js:1649 Error: <polygon> attribute points: Expected number, "…5.09910308935887% 31.59780429280…".
+setValueForAttribute @ react-dom-client.development.js:1649
+react-dom-client.development.js:1649 Error: <polygon> attribute points: Expected number, "…5.09910308935887% 31.59780429280…".
+setValueForAttribute @ react-dom-client.development.js:1649
+react-dom-client.development.js:1649 Error: <polygon> attribute points: Expected number, "…5.09910308935887% 31.59780429280…".
+setValueForAttribute @ react-dom-client.development.js:1649
+react-dom-client.development.js:1649 Error: <polygon> attribute points: Expected number, "…5.09910308935887% 31.59780429280…".
+setValueForAttribute @ react-dom-client.development.js:1649
+6163064c-d1ba-4826-a01f-4877f838fa9f.mp4:1  Failed to load resource: the server responded with a status of 404 (Not Found)

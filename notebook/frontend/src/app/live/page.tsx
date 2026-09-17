@@ -124,7 +124,7 @@ export default function LiveMonitoring() {
           });
           if (data.status !== activeJob.status) {
             setActiveJob(data);
-            if (data.status === 'processing') {
+            if (data.status === 'processing' || data.status === 'live') {
               setStreamUrl(`/api/v1/stream?jobId=${data.id}`);
             }
           }
@@ -200,6 +200,7 @@ export default function LiveMonitoring() {
       if (res.ok) {
         const data = await res.json();
         setActiveJob(data);
+        setStreamUrl(`/api/v1/stream?jobId=${data.id}`);
         setJobProgress({ progress: 0, total: 0, fps: 0, workers_detected: 0, violations_detected: 0 });
         setJobViolations([]);
       }
@@ -509,7 +510,7 @@ export default function LiveMonitoring() {
                     >
                       {polygonPoints.length > 0 && (
                         <polygon
-                          points={polygonPoints.map(p => `${p[0] * 100}% ${p[1] * 100}%`).join(', ')}
+                          points={polygonPoints.map(p => `${p[0] * imgRef.current!.clientWidth} ${p[1] * imgRef.current!.clientHeight}`).join(', ')}
                           fill="rgba(34, 197, 94, 0.2)"
                           stroke="#22c55e"
                           strokeWidth="2"
@@ -569,44 +570,75 @@ export default function LiveMonitoring() {
               </div>
             )}
 
-            {(jobState === 'processing' || jobState === 'queued') && (
-              <div className="glass-card p-12 text-center flex flex-col items-center justify-center animate-fade-in min-h-[400px]">
-                <div className="w-16 h-16 rounded-full border-4 border-gray-100 animate-spin mb-6" style={{ borderTopColor: '#4f46e5' }}></div>
-                <h2 className="text-2xl font-bold text-gray-900 mb-2">Analyzing Video</h2>
-                <p className="text-gray-500 mb-8 max-w-md">Processing frames through the V6-HITL model. Please wait while detections and temporal validations are performed.</p>
-                <div className="w-full max-w-lg mb-6">
-                  <div className="flex justify-between text-xs font-semibold text-slate-500 mb-2">
-                    <span>{jobProgress?.progress || 0} / {jobProgress?.total || 0} Frames</span>
-                    <span>{jobProgress && jobProgress.total > 0 ? Math.round((jobProgress.progress / jobProgress.total) * 100) : 0}%</span>
+            {(jobState === 'processing' || jobState === 'queued' || jobState === 'connecting' || jobState === 'live') && (
+              <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 animate-fade-in">
+                {/* Live Stream Feed */}
+                <div className="lg:col-span-2 glass-card overflow-hidden">
+                  <div className="relative aspect-video bg-black flex items-center justify-center">
+                    {streamUrl ? (
+                      <img
+                        src={`http://localhost:8000${streamUrl}`}
+                        alt="Live Stream"
+                        className="w-full h-full object-contain"
+                      />
+                    ) : (
+                      <div className="flex flex-col items-center justify-center gap-4 text-white">
+                        <div className="w-12 h-12 rounded-full border-4 border-gray-600 animate-spin" style={{ borderTopColor: '#4f46e5' }}></div>
+                        <p className="text-sm text-slate-400">Connecting to camera stream...</p>
+                      </div>
+                    )}
+                    {/* Live badge */}
+                    <div className="absolute top-3 left-3 flex items-center gap-1.5 px-2 py-1 rounded text-xs font-bold text-white" style={{ background: 'rgba(239,68,68,0.85)' }}>
+                      <div className="w-2 h-2 rounded-full bg-white animate-pulse" />
+                      LIVE
+                    </div>
+                    {/* Stop button overlay */}
+                    <button
+                      className="absolute top-3 right-3 px-3 py-1.5 rounded text-xs font-semibold text-white flex items-center gap-1.5"
+                      style={{ background: 'rgba(0,0,0,0.6)', border: '1px solid rgba(255,255,255,0.2)' }}
+                      onClick={stopProcessing}
+                    >
+                      <Square className="h-3 w-3" /> Stop
+                    </button>
                   </div>
-                  <div className="w-full bg-slate-100 rounded-full h-3 overflow-hidden">
-                    <div 
-                      className="h-3 rounded-full transition-all duration-500" 
-                      style={{ width: `${jobProgress && jobProgress.total > 0 ? (jobProgress.progress / jobProgress.total) * 100 : 0}%`, background: 'linear-gradient(90deg, #4f46e5, #7c3aed)' }}
-                    ></div>
+                  {/* Stats bar under video */}
+                  <div className="grid grid-cols-3 gap-0 border-t border-slate-100">
+                    <div className="p-3 text-center border-r border-slate-100">
+                      <p className="text-[10px] uppercase font-bold text-slate-400">FPS</p>
+                      <p className="text-lg font-bold text-slate-700">{jobProgress?.fps?.toFixed(1) || '0.0'}</p>
+                    </div>
+                    <div className="p-3 text-center border-r border-slate-100">
+                      <p className="text-[10px] uppercase font-bold text-purple-400">Workers</p>
+                      <p className="text-lg font-bold text-purple-700">{jobProgress?.workers_detected || 0}</p>
+                    </div>
+                    <div className="p-3 text-center">
+                      <p className="text-[10px] uppercase font-bold text-red-400">Violations</p>
+                      <p className="text-lg font-bold text-red-700">{jobProgress?.violations_detected || 0}</p>
+                    </div>
                   </div>
                 </div>
-                
-                <div className="grid grid-cols-3 gap-4 w-full max-w-lg mb-8">
-                  <div className="p-3 bg-slate-50 rounded-lg border border-slate-100">
-                    <p className="text-[10px] uppercase font-bold text-slate-400">Current FPS</p>
-                    <p className="text-lg font-bold text-slate-700">{jobProgress?.fps?.toFixed(1) || '0.0'}</p>
-                  </div>
-                  <div className="p-3 bg-purple-50 rounded-lg border border-purple-100">
-                    <p className="text-[10px] uppercase font-bold text-purple-400">Workers Found</p>
-                    <p className="text-lg font-bold text-purple-700">{jobProgress?.workers_detected || 0}</p>
-                  </div>
-                  <div className="p-3 bg-red-50 rounded-lg border border-red-100">
-                    <p className="text-[10px] uppercase font-bold text-red-400">Violations</p>
-                    <p className="text-lg font-bold text-red-700">{jobProgress?.violations_detected || 0}</p>
+
+                {/* Right Panel - Live Violations */}
+                <div className="space-y-4">
+                  <div className="glass-card p-5">
+                    <h3 className="text-xs font-semibold uppercase tracking-wider text-slate-400 mb-4">Live Violations</h3>
+                    {violations.length === 0 ? (
+                      <p className="text-sm text-slate-400">No violations detected yet.</p>
+                    ) : (
+                      <div className="space-y-3 max-h-96 overflow-y-auto">
+                        {violations.slice(0, 10).map((v: any) => (
+                          <div key={v.id} className="p-3 rounded-lg border border-red-100 bg-red-50">
+                            <p className="text-xs font-bold text-slate-700">Worker #{v.worker_tracking_id}</p>
+                            <p className="text-[10px] text-red-500 font-medium mt-1">Missing: {v.missing_ppe?.join(', ')}</p>
+                          </div>
+                        ))}
+                      </div>
+                    )}
                   </div>
                 </div>
-                
-                <button className="btn-ghost text-red-500 hover:text-red-600 hover:bg-red-50 px-4 py-2" onClick={stopProcessing}>
-                  Cancel Processing
-                </button>
               </div>
             )}
+
 
             {jobState === 'completed' && (
               <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 animate-fade-in">

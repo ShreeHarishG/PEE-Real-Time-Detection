@@ -2,7 +2,7 @@ import os
 from sqlalchemy import create_engine, text
 
 # Use the environment variable if present, otherwise default to the one from .env.example
-database_url = os.environ.get("DATABASE_URL", "postgresql://edgevision:edgevision_password@localhost:5432/edgevision")
+database_url = os.environ.get("DATABASE_URL", "postgresql://edgevision:edgevision_password@localhost:5455/edgevision")
 
 engine = create_engine(database_url)
 

@@ -124,7 +124,7 @@ export default function LiveMonitoring() {
           });
           if (data.status !== activeJob.status) {
             setActiveJob(data);
-            if (data.status === 'processing') {
+            if (data.status === 'processing' || data.status === 'live') {
               setStreamUrl(`/api/v1/stream?jobId=${data.id}`);
             }
           }
@@ -200,6 +200,7 @@ export default function LiveMonitoring() {
       if (res.ok) {
         const data = await res.json();
         setActiveJob(data);
+        setStreamUrl(`/api/v1/stream?jobId=${data.id}`);
         setJobProgress({ progress: 0, total: 0, fps: 0, workers_detected: 0, violations_detected: 0 });
         setJobViolations([]);
       }
@@ -522,7 +523,7 @@ export default function LiveMonitoring() {
                     >
                       {polygonPoints.length > 0 && (
                         <polygon
-                          points={polygonPoints.map(p => `${p[0] * 100}% ${p[1] * 100}%`).join(', ')}
+                          points={polygonPoints.map(p => `${p[0] * imgRef.current!.clientWidth} ${p[1] * imgRef.current!.clientHeight}`).join(', ')}
                           fill="rgba(34, 197, 94, 0.2)"
                           stroke="#22c55e"
                           strokeWidth="2"
@@ -631,7 +632,7 @@ export default function LiveMonitoring() {
                         ref={videoRef}
                         controls 
                         className="w-full h-full object-contain"
-                        src={`/results/${activeJob.id}.mp4`}
+                        src={`http://localhost:8000/results/${activeJob.id}.mp4`}
                       >
                         Your browser does not support the video tag.
                       </video>
@@ -645,7 +646,7 @@ export default function LiveMonitoring() {
                         </h3>
                         <p className="text-xs text-slate-500 mt-1">Video analyzed successfully using V6-HITL pipeline.</p>
                       </div>
-                      <a href={`/results/${activeJob.id}.mp4`} download className="btn-secondary text-xs">
+                      <a href={`http://localhost:8000/results/${activeJob.id}.mp4`} download className="btn-secondary text-xs">
                         Download Video
                       </a>
                     </div>

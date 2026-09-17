@@ -1,7 +1,7 @@
 from sqlalchemy import create_engine, text
 import os
 
-DATABASE_URL = "postgresql://edgevision:edgevision_password@localhost:5432/edgevision"
+DATABASE_URL = "postgresql://edgevision:edgevision_password@localhost:5455/edgevision"
 engine = create_engine(DATABASE_URL)
 with engine.connect() as conn:
     try:

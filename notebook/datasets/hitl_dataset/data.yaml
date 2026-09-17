@@ -1,0 +1,10 @@
+names:
+  0: person
+  1: helmet
+  2: no_helmet
+  3: vest
+  4: boots
+  5: harness
+path: W:\3 projects\Building\Tfrenzy\notebook\datasets\hitl_dataset
+train: train/images
+val: train/images

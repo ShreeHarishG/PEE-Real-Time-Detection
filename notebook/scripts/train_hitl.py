@@ -11,7 +11,7 @@ from ultralytics import YOLO
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "backend")))
 from app import models
 
-DATABASE_URL = os.getenv("DATABASE_URL", "postgresql://edgevision:edgevision_password@localhost:5432/edgevision")
+DATABASE_URL = os.getenv("DATABASE_URL", "postgresql://edgevision:edgevision_password@localhost:5455/edgevision")
 engine = create_engine(DATABASE_URL)
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 

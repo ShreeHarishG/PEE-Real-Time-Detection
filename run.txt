@@ -1,0 +1,30 @@
+(ppe-env) tfrenzy@ubuntu:~/Harish/Tfrenzy2$ 
+(ppe-env) tfrenzy@ubuntu:~/Harish/Tfrenzy2$ sudo docker compose down -v --remove-orphans
+no configuration file provided: not found
+(ppe-env) tfrenzy@ubuntu:~/Harish/Tfrenzy2$ cd notebook
+(ppe-env) tfrenzy@ubuntu:~/Harish/Tfrenzy2/notebook$ sudo docker compose down -v --remove-orphans
+[+] down 3/3
+ ✔ Container tfrenzy_edgevision_db_5455 Removed                                                                                           0.4s
+ ✔ Network notebook_default             Removed                                                                                           0.1s
+ ✔ Volume notebook_postgres_data        Removed                                                                                           0.1s
+(ppe-env) tfrenzy@ubuntu:~/Harish/Tfrenzy2/notebook$ sudo docker rm -f $(sudo docker ps -aq) 2>/dev/null || true
+3af17ead96ea
+(ppe-env) tfrenzy@ubuntu:~/Harish/Tfrenzy2/notebook$ find ~/Harish/Tfrenzy2 -type f -name "*.py" -exec sed -i 's/localhost:5432/localhost:5455/g' {} +
+(ppe-env) tfrenzy@ubuntu:~/Harish/Tfrenzy2/notebook$ find ~/Harish/Tfrenzy2 -type f -name "*.py" -exec sed -i 's/localhost:5434/localhost:5455/g' {} +
+(ppe-env) tfrenzy@ubuntu:~/Harish/Tfrenzy2/notebook$ sed -i 's/"5432:5432"/"5455:5432"/g' ~/Harish/Tfrenzy2/notebook/docker-compose.yml
+(ppe-env) tfrenzy@ubuntu:~/Harish/Tfrenzy2/notebook$ sed -i 's/"5434:5432"/"5455:5432"/g' ~/Harish/Tfrenzy2/notebook/docker-compose.yml
+(ppe-env) tfrenzy@ubuntu:~/Harish/Tfrenzy2/notebook$ rm -f ~/Harish/Tfrenzy2/.env
+(ppe-env) tfrenzy@ubuntu:~/Harish/Tfrenzy2/notebook$ rm -f ~/Harish/Tfrenzy2/notebook/.env
+(ppe-env) tfrenzy@ubuntu:~/Harish/Tfrenzy2/notebook$ rm -f ~/Harish/Tfrenzy2/notebook/backend/.env
+(ppe-env) tfrenzy@ubuntu:~/Harish/Tfrenzy2/notebook$ ^[[200~unset DATABASE_URL
+bash: $'\E[200~unset': command not found
+(ppe-env) tfrenzy@ubuntu:~/Harish/Tfrenzy2/notebook$ unset DATABASE_URL
+(ppe-env) tfrenzy@ubuntu:~/Harish/Tfrenzy2/notebook$ sudo docker compose up -d db
+[+] up 3/3
+ ✔ Network notebook_default             Created                                                                                           0.1s
+ ✔ Volume notebook_postgres_data        Created                                                                                           0.0s
+ ✔ Container tfrenzy_edgevision_db_5455 Started                                                                                           0.4s
+(ppe-env) tfrenzy@ubuntu:~/Harish/Tfrenzy2/notebook$ sudo docker ps | grep 5455
+feb0e6ba7058   postgres:15-alpine   "docker-entrypoint.s…"   12 seconds ago   Up 12 seconds   0.0.0.0:5455->5432/tcp, [::]:5455->5432/tcp   tfrenzy_edgevision_db_5455
+(ppe-env) tfrenzy@ubuntu:~/Harish/Tfrenzy2/notebook$ ^C
+(ppe-env) tfrenzy@ubuntu:~/Harish/Tfrenzy2/notebook$ 
